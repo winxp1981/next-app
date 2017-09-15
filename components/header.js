@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link'
 import Cookies from 'universal-cookie';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -67,25 +68,26 @@ class Header extends React.Component {
             </li>;
     }
     else {
-        loginDisplay = <li className="top_menu"><a className="top_item" href="/login"> Login </a></li>;
+        loginDisplay = <li className="top_menu"><Link href='/login'><a className="top_item"> Login </a></Link></li>;
     }
 
     return (
     <div className='header'>
         <img src="../static/img/react.png" width="80" height="80" alt="" />
         <ul className='header'>
-         <li className="top_menu"><a className="top_item" href="/about">
+        { /* user Link to avoid trigger server render */ }
+        <li className="top_menu"><Link href='/about'><a className="top_item">
          {
          // <FormattedMessage id='about' description='' defaultMessage='About'/>
          }
          About
-         </a></li>
-         <li className="top_menu"><a className="top_item" href="/stuff">
+         </a></Link></li>
+         <li className="top_menu"><Link href='/stuff'><a className="top_item">
          {
          // <FormattedMessage id='stuff' description='' defaultMessage='Stuff'/>
          }
          Search
-         </a></li>
+         </a></Link></li>
              { loginDisplay }
         </ul>
         <style global jsx>{`

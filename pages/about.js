@@ -9,15 +9,9 @@ class About extends React.Component {
   static async getInitialProps({ req, store}) {  // only support in server side if there is req in parameter
   const initProps = {};
   if (req && req.headers) {
-    const cookies = new Cookies(req.headers.cookie);
-    initProps.username = cookies.get('username');
   }
   else {
-    const cookies = new Cookies();
-    initProps.username = cookies.get('username');
   }
-
-  store.dispatch(setUsername(initProps.username));
   return initProps;
 }
 

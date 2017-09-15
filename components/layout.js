@@ -20,6 +20,8 @@ class Layout extends React.Component {
           <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
           { /* font-awesome */ }
           <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css" />
+          { /* Google Map */ }
+          <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBNKKAhKocKWQ43dc6NT3fCyaLPTdxmAX0" type="text/javascript"></script>
         </Head>
         <Header />
 
