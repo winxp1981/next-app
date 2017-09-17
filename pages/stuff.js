@@ -5,9 +5,10 @@ import { bindActionCreators } from 'redux'
 import { initStore, addCount, setUsername } from '../store'
 import withRedux from 'next-redux-wrapper'
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
-
-// defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
-//defaultCenter={{ lat: parseFloat(props.lat), lng: parseFloat(props.lng) }}
+import { translate } from 'react-i18next'
+import { I18nextProvider } from 'react-i18next'
+import startI18n from '../tools/startI18n'
+import { getTranslation } from '../tools/translationHelpers'
 
 const GettingStartedGoogleMap = withGoogleMap(props => (
   <GoogleMap
@@ -28,11 +29,19 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
 class Stuff extends React.Component {
   constructor(props) {
     super(props);
+    this.i18n = startI18n(props.translations, props.locale)
     console.log('hello Stuff');
   }
 
   static async getInitialProps({ req, store }) {  // only support in server side if there is req in parameter
     const initProps = {};
+    initProps.locale = 'tw';   // 只是初值, 會被store裡的locale override
+    const translations = await getTranslation(
+      initProps.locale,
+      ['common', 'namespace1'],
+      'http://localhost:3000/static/locales/'
+    )
+    initProps.translations = translations;
     return initProps;
   }
 
@@ -87,6 +96,28 @@ class Stuff extends React.Component {
       }, function() {
         //handleLocationError(true, infoWindow, map.getCenter());
         console.log("getCurrentPosition error");
+
+        // use default location
+        self.setState({
+          center: {
+            lat: 25.034,
+            lng: 121.56,
+          },
+
+          position_initialized: true,
+        });
+
+        var {markers} = self.state;
+        markers.push (
+            {
+              position: { lat:self.state.center.lat, lng:self.state.center.lng},
+              defaultAnimation: 2,
+              key: Date.now(),// Add a key property for: http://fb.me/react-warning-keys
+            },
+          );
+
+        self.setState({ markers });
+        self.forceUpdate();
       });
       } else {
         // Browser doesn't support Geolocation
@@ -120,6 +151,7 @@ class Stuff extends React.Component {
   render () {
   //  console.log("render MAP (" + this.state.center.lat + ", " + this.state.center.lng + ")");
     return (
+      <I18nextProvider i18n={this.i18n}>
       <Layout title = "Welcome to InstRent">
       <div style={{height: `700px`}}>
       { this.state.position_initialized ? (
@@ -142,6 +174,7 @@ class Stuff extends React.Component {
 
 `}</style>
       </Layout>
+      </I18nextProvider>
     );
   }
 }
@@ -149,8 +182,9 @@ class Stuff extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
-    count: state.count
+    count: state.count,
+    locale: state.locale,
   }
 }
 // export default Stuff
-export default withRedux(initStore, null, null)(Stuff)
+export default withRedux(initStore, mapStateToProps, null)(Stuff)

@@ -4,6 +4,12 @@ import Cookies from 'universal-cookie';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { initStore, addCount, setUsername } from '../store'
+import { translate } from 'react-i18next'
+import Head from 'next/head'
+import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
+import theme from '../static/theme'
+import LoginDialog from './loginDialog'
+
 //import ReactDOM from 'react-dom';
 /*
 import {
@@ -16,13 +22,27 @@ import {
 */
 import {
     logoutUser
-} from '../pages/login'
+} from './loginDialog'
 //import { FormattedMessage } from 'react-intl';
 
 class Header extends React.Component {
+  state = {
+    login_dialog_active: false
+  };
+
+  handleToggleLogin = () => {
+    this.setState({login_dialog_active: !this.state.login_dialog_active});
+  }
+
+  actions = [
+    { label: "Dismiss", onClick: this.handleToggleLogin },
+  //  { label: "Save", onClick: this.handleToggle }
+  ];
+
   constructor(props, context) {
     super(props, context);
     //console.log('@@ Header ctor isUserLoggedIn (' + Header.isUserLoggedIn + ')');
+    this.t = props.t
   }
 
   handleLogout(event) {
@@ -52,7 +72,7 @@ class Header extends React.Component {
          isUserLoggedIn = true;
     }
     */
-
+/*
     if (this.props.username) {
         // note: can only return "one" root element in a variable
         loginDisplay =
@@ -68,9 +88,11 @@ class Header extends React.Component {
             </li>;
     }
     else {
-        loginDisplay = <li className="top_menu"><Link href='/login'><a className="top_item"> Login </a></Link></li>;
+      //  loginDisplay = <li className="top_menu"><Link href='/login'><a className="top_item"> {this.t('login')} </a></Link></li>;
+      //  loginDisplay = <li className="top_menu"><Button label={this.t('login')} onClick={this.handleToggle} /></li>;
+      loginDisplay = <li className="top_menu"><a className="top_item" href='#' onClick={this.handleToggleLogin}> {this.t('login')} </a></li>;
     }
-
+*/
     return (
     <div className='header'>
         <img src="../static/img/react.png" width="80" height="80" alt="" />
@@ -80,17 +102,41 @@ class Header extends React.Component {
          {
          // <FormattedMessage id='about' description='' defaultMessage='About'/>
          }
-         About
+         {this.t('about')}
          </a></Link></li>
          <li className="top_menu"><Link href='/stuff'><a className="top_item">
          {
          // <FormattedMessage id='stuff' description='' defaultMessage='Stuff'/>
          }
-         Search
+         {this.t('search')}
          </a></Link></li>
-             { loginDisplay }
+         {
+           this.props.username ? (
+                   <li className="dropdown top_menu">
+                       <a className="dropdown-toggle top_item" data-toggle="dropdown" href="#">
+                           <span className="glyphicon glyphicon-user"></span>
+                           { ' ' + this.props.username }
+                       </a>
+                       <ul className="dropdown-menu">
+                         <li><a href="#">Profile</a></li>
+                         <li><a href="#" onClick={this.handleLogout}>Logout</a></li>
+                       </ul>
+                   </li>
+           )
+           : (
+             //  loginDisplay = <li className="top_menu"><Link href='/login'><a className="top_item"> {this.t('login')} </a></Link></li>;
+             //  loginDisplay = <li className="top_menu"><Button label={this.t('login')} onClick={this.handleToggle} /></li>;
+             <li className="top_menu"><a className="top_item" href='#' onClick={this.handleToggleLogin}> {this.t('login')} </a></li>
+           )
+         }
         </ul>
-        <style global jsx>{`
+        <LoginDialog
+          actions={this.actions}
+          active={this.state.login_dialog_active}
+          onEscKeyDown={this.handleToggleLogin}
+          onOverlayClick={this.handleToggleLogin}
+        />
+        <style jsx>{`
           div.header {
           /*    border: 1px solid red;  */
               margin-right: 30px;
@@ -180,4 +226,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 // export default Header
-export default connect(mapStateToProps, mapDispatchToProps)(Header)
+export default translate(['common'])(connect(mapStateToProps, mapDispatchToProps)(Header))

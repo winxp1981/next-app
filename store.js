@@ -4,6 +4,7 @@ import thunkMiddleware from 'redux-thunk'
 
 const storeInitialState = {
   username: '',
+  locale: '',
   count: 100
 }
 
@@ -11,6 +12,7 @@ const storeInitialState = {
 export const actionTypes = {
   ADD: 'ADD',
   SET_USERNAME: 'SET_USERNAME',
+  SET_LOCALE: 'SET_LOCALE',
 }
 
 // REDUCERS
@@ -21,10 +23,14 @@ export const reducer = (state = storeInitialState, action) => {
       return Object.assign({}, state, {
         count: state.count + 2
       })
-      case actionTypes.SET_USERNAME:
-        return Object.assign({}, state, {
-          username: action.text
-        })
+    case actionTypes.SET_USERNAME:
+      return Object.assign({}, state, {
+        username: action.text
+      })
+    case actionTypes.SET_LOCALE:
+      return Object.assign({}, state, {
+        locale: action.text
+      })
     default: return state
   }
 }
@@ -38,6 +44,14 @@ export const setUsername = (text) => dispatch => {
   return dispatch(
     {
       type: actionTypes.SET_USERNAME,
+      text
+    })
+}
+
+export const setLocale = (text) => dispatch => {
+  return dispatch(
+    {
+      type: actionTypes.SET_LOCALE,
       text
     })
 }
