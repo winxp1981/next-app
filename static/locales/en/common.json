@@ -3,5 +3,9 @@
   "about": "About",
   "search": "Search",
   "login": "Login",
-  "signup": "Signup"
+  "signup": "Signup",
+  "email_address": "Email address",
+  "password": "Password",
+  "login_facebook": "Login with facebook",
+  "login_google": "Login with Google"
 }

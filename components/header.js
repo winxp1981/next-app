@@ -104,12 +104,21 @@ class Header extends React.Component {
          }
          {this.t('about')}
          </a></Link></li>
+         {
+         <li className="top_menu"><Link href='/index'><a className="top_item">
+         {this.t('租屋')}
+         </a></Link></li>
+         }
+         {
+        /*
          <li className="top_menu"><Link href='/stuff'><a className="top_item">
          {
          // <FormattedMessage id='stuff' description='' defaultMessage='Stuff'/>
          }
          {this.t('search')}
          </a></Link></li>
+         */
+         }
          {
            this.props.username ? (
                    <li className="dropdown top_menu">

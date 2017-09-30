@@ -8,22 +8,20 @@ import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
-import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
 import Head from 'next/head'
-import theme from '../static/theme'
-import Button from 'react-toolbox/lib/button/Button'
 
 
 class About extends React.Component {
-  static async getInitialProps({ req, store}) {  // only support in server side if there is req in parameter
+  static async getInitialProps({ req, store, query }) {  // only support in server side if there is req in parameter
     const initProps = {};
-    initProps.locale = 'tw';   // 只是初值, 會被store裡的locale override
+    initProps.locale = 'tw';
     const translations = await getTranslation(
       initProps.locale,
       ['common', 'namespace1'],
       'http://localhost:3000/static/locales/'
     )
     initProps.translations = translations;
+    console.log(query.id);
     return initProps;
   }
 
@@ -38,14 +36,12 @@ class About extends React.Component {
       <I18nextProvider i18n={this.i18n}>
       <Layout title = "Welcome to InstRent">
         <div className='jumbotron'><h1>About us</h1></div>
+        <div className='jumbotron'><h1>{this.props.url.query.id}</h1></div>
         <Head>
-          <link href='/static/theme.css' rel='stylesheet' />
         </Head>
-        <ThemeProvider theme={theme}>
         <div>
-        <Button raised primary>Hello</Button>
+
         </div>
-        </ThemeProvider>
       </Layout>
       </I18nextProvider>
     );
@@ -56,7 +52,6 @@ const mapStateToProps = (state) => {
   return {
     username: state.username,
     count: state.count,
-    locale: state.locale
   }
 }
 // export default About

@@ -35,7 +35,7 @@ class Stuff extends React.Component {
 
   static async getInitialProps({ req, store }) {  // only support in server side if there is req in parameter
     const initProps = {};
-    initProps.locale = 'tw';   // 只是初值, 會被store裡的locale override
+    initProps.locale = 'tw';
     const translations = await getTranslation(
       initProps.locale,
       ['common', 'namespace1'],
@@ -183,7 +183,6 @@ const mapStateToProps = (state) => {
   return {
     username: state.username,
     count: state.count,
-    locale: state.locale,
   }
 }
 // export default Stuff

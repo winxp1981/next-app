@@ -3,5 +3,9 @@
   "about": "關於",
   "search": "搜尋",
   "login": "登入",
-  "signup": "註冊"
+  "signup": "註冊",
+  "email_address": "電子郵件地址",
+  "password": "密碼",
+  "login_facebook": "facebook 登入",
+  "login_google": "Google+ 登入"
 }
