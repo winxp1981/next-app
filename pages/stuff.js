@@ -39,7 +39,7 @@ class Stuff extends React.Component {
     const translations = await getTranslation(
       initProps.locale,
       ['common', 'namespace1'],
-      'http://localhost:3000/static/locales/'
+      FRONTEND_URL+'/static/locales/'
     )
     initProps.translations = translations;
     return initProps;

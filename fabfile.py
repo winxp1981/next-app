@@ -27,7 +27,7 @@ def create_virtualenv():
     run('virtualenv --python=/usr/bin/python3.5 %s %s' % (args, env.virtualenv_root))
 
 def pack():
-    tar_files = ['./*']
+    tar_files = ['./*', '.babelrc']
     local('rm -f %s' % TAR_FILE_NAME)
 
     local('tar -czvf %s %s --exclude="node_modules"' % (TAR_FILE_NAME, ' '.join(tar_files)))

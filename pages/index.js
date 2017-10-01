@@ -16,6 +16,7 @@ import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
 import { Grid, Card, Icon, Image, Label, Dropdown, Menu } from 'semantic-ui-react'
+import { Carousel } from 'react-responsive-carousel';
 
 
 
@@ -84,7 +85,7 @@ class Index extends React.Component {
     const translations = await getTranslation(
       initProps.locale,
       ['common', 'namespace1'],
-      'http://localhost:3000/static/locales/'
+      FRONTEND_URL+'/static/locales/'
     )
     initProps.translations = translations;
 
@@ -106,6 +107,7 @@ class Index extends React.Component {
     console.log(response.status);
     //console.log(data);
     if (response.status === 200) {
+    /*
       var i;
       for (i = 0; i < data.length; i++) {
         console.log('data['+i+']:');
@@ -113,6 +115,7 @@ class Index extends React.Component {
         console.log('data['+i+'].desc: '+ data[i].description);
         console.log('data['+i+'].photo: '+ data[i].photo);
       }
+    */
       initProps.room_data = data;
       result = true;
     }
@@ -151,15 +154,27 @@ class Index extends React.Component {
 
   render () {
     var searchDivStyle = {
-    //    border: '1px solid yellow',
-        width: '100%',
-        height: '40px',
-        marginLeft: '10%',
-        marginBottom: '40px',
+    //    border: '1px solid green',
+        position: 'absolute',
+        width: '50%',
+        height: '80px',
+    //    top: '70%',
+        bottom: '10px',
+        left: '25%',
+  //      marginLeft: '10%',
+        paddingTop: '20px',
+        paddingLeft: '20px',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        borderRadius: '10px',
     }
     var inputStyle = {
-  //      float: 'left',
-        width: '30%',
+      //  float: 'right',
+        width: '70%',
+    }
+    var carouselDivStyle = {
+        // https://stackoverflow.com/questions/10487292/position-absolute-but-relative-to-parent
+        position: 'relative',
+    //    border: '1px solid red',
     }
     var cardStyle = {
 //        border: '1px solid blue',
@@ -173,6 +188,7 @@ class Index extends React.Component {
 //        border: '1px solid red',
         width: '80%',
         margin: '0 auto',
+        marginTop: '50px',
     }
     var priceStyle = {
 //        border: '1px solid red',
@@ -230,20 +246,37 @@ class Index extends React.Component {
         //   <div className='jumbotron'><h1>HOME</h1></div>
         }
         <Head>
+          <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
         </Head>
         <div>
-          <div style={searchDivStyle}>
-            <Dropdown style={dropDownStyle} placeholder='不限地區' search selection options={search_location} onChange={this.handleChange}/>
-            <Input style={inputStyle} size='medium' type='text' placeholder='搜尋' name='search' onChange={this.handleInputChange} action>
-              <input />
-              <Button type='submit' color='brown'>Search</Button>
-            </Input>
-          </div>
-          <div style={gridDivStyle}>
+          <div style={carouselDivStyle}>
+            <Carousel showStatus={false} showIndicators={false} showThumbs={false} infiniteLoop={true} autoPlay={true}>
+              <div>
+                  <img src="../static/img/ChAFD1muV8uAIP0DAAbtGK7EYFw715.jpg" />
+              </div>
+              <div>
+                  <img src="../static/img/ChAFfVl--myAAxB2AAL5Ptj5lbA233.jpg" />
+              </div>
+              <div>
+                  <img src="../static/img/ChAFfVlnG6GAVWDeAARBpjqMJy8753.jpg" />
+              </div>
+              <div>
+                  <img src="../static/img/ChAFD1m5DSOAOcrUAANztihPK14300.jpg" />
+              </div>
+            </Carousel>
+            <div style={searchDivStyle}>
+              <Dropdown style={dropDownStyle} placeholder='不限地區' search selection options={search_location} onChange={this.handleChange}/>
+              <Input style={inputStyle} size='medium' type='text' placeholder='搜尋' name='search' onChange={this.handleInputChange} action>
+                <input />
+                <Button type='submit' color='orange'><Icon name='search' /> Search</Button>
+              </Input>
+            </div>
+        </div>
+        <div style={gridDivStyle}>
           <Grid centered={false} columns={3} relaxed={true} stackable={true}>
           {roomCards}
           </Grid>
-          </div>
+        </div>
       </div>
     </Layout>
     </I18nextProvider>
