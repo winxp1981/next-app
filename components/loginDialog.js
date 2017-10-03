@@ -536,6 +536,12 @@ class LoginDialog extends React.Component {
       backgroundColor: '#55AA00',
       textTransform: 'none',
     };
+    var innerTabDivStyle = {
+    //  border:'solid 1px blue',
+      width: '80%',
+      height: '80%',
+      margin: '0 auto',
+    };
     var normalLoginDivStyle = {
     //  border:'solid 1px red'
     };
@@ -549,10 +555,6 @@ class LoginDialog extends React.Component {
       margin: '0 auto',
       fill: '#FFF'
     };
-    var dialogStyle = {
-      width: '25%',
-      height: '100px',
-    };
     return (
     <div>
     <Head>
@@ -560,12 +562,13 @@ class LoginDialog extends React.Component {
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     </Head>
     <ThemeProvider theme={theme}>
-    <Dialog style={dialogStyle}
+    <Dialog
       actions={this.props.actions}
       active={this.props.active}
       onEscKeyDown={this.props.onEscKeyDown}
       onOverlayClick={this.props.onOverlayClick}
     >
+    <div style={innerTabDivStyle}>
     <Tabs index={this.state.fixedIndex} onChange={this.handleFixedTabChange} fixed>
       <Tab label={this.t('login')}>
       <div style={normalLoginDivStyle}>
@@ -606,7 +609,7 @@ class LoginDialog extends React.Component {
       </section>
       </Tab>
     </Tabs>
-
+    </div>
   <style jsx>{`
     @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
   `}</style>

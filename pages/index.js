@@ -107,7 +107,7 @@ class Index extends React.Component {
     console.log(response.status);
     //console.log(data);
     if (response.status === 200) {
-    /*
+/*
       var i;
       for (i = 0; i < data.length; i++) {
         console.log('data['+i+']:');
@@ -115,7 +115,7 @@ class Index extends React.Component {
         console.log('data['+i+'].desc: '+ data[i].description);
         console.log('data['+i+'].photo: '+ data[i].photo);
       }
-    */
+*/
       initProps.room_data = data;
       result = true;
     }

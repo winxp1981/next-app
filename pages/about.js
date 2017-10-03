@@ -9,6 +9,7 @@ import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
+import AddRoom from '../components/addRoom'
 
 
 class About extends React.Component {

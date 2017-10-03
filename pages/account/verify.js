@@ -7,10 +7,7 @@ import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../../tools/startI18n'
 import { getTranslation } from '../../tools/translationHelpers'
-import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
 import Head from 'next/head'
-import theme from '../../static/theme'
-import Button from 'react-toolbox/lib/button/Button'
 
 async function sendVerifyEmail(_key) {
   console.log("+sendVerifyEmail");
@@ -65,11 +62,6 @@ class Verify extends React.Component {
         <Head>
           <link href='/static/theme.css' rel='stylesheet' />
         </Head>
-        <ThemeProvider theme={theme}>
-        <div>
-        <Button raised primary>Hello</Button>
-        </div>
-        </ThemeProvider>
       </div>
       </I18nextProvider>
     );
