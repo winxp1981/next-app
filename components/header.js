@@ -1,5 +1,6 @@
 import React from 'react';
-import Link from 'next/link'
+//import Link from 'next/link'
+import { Link } from "../routes";
 import Cookies from 'universal-cookie';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -98,26 +99,18 @@ class Header extends React.Component {
         <img src="../static/img/react.png" width="80" height="80" alt="" />
         <ul className='header'>
         { /* user Link to avoid trigger server render */ }
-        <li className="top_menu"><Link href='/about'><a className="top_item">
-         {
-         // <FormattedMessage id='about' description='' defaultMessage='About'/>
-         }
+        <li className="top_menu"><Link route='about' params={{id: '888'}}><a className="top_item">
          {this.t('about')}
          </a></Link></li>
          {
-         <li className="top_menu"><Link href='/index'><a className="top_item">
+         <li className="top_menu"><Link route='/'><a className="top_item">
          {this.t('租屋')}
          </a></Link></li>
          }
          {
-        /*
-         <li className="top_menu"><Link href='/stuff'><a className="top_item">
-         {
-         // <FormattedMessage id='stuff' description='' defaultMessage='Stuff'/>
-         }
-         {this.t('search')}
+         <li className="top_menu"><Link route='/host'><a className="top_item">
+         {this.t('房東')}
          </a></Link></li>
-         */
          }
          {
            this.props.username ? (
