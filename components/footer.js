@@ -29,7 +29,7 @@ class Footer extends React.Component {
         height: '200px',
     //    height: '100px',
     //    backgroundColor: '#FFBB66',
-        paddingTop: '40px',
+        paddingTop: '80px',
         margin: '0 auto',
     }
     var dividerStyle = {
@@ -50,7 +50,7 @@ class Footer extends React.Component {
         </List>
         <List horizontal floated='right'>
           <List.Item>
-            2018 InstRent. All Rights Reserved.
+            2018 Roomoca. All Rights Reserved.
           </List.Item>
         </List>
       </div>

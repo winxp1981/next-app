@@ -1,7 +1,8 @@
-import React from 'react';
-import Link from 'next/link'
+import React from 'react'
+// import Link from 'next/link'
+import { Link } from "../routes"
 import Layout from '../components/layout'
-import Cookies from 'universal-cookie';
+import Cookies from 'universal-cookie'
 import { bindActionCreators } from 'redux'
 import {
   initStore,
@@ -15,9 +16,9 @@ import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu } from 'semantic-ui-react'
-import { Carousel } from 'react-responsive-carousel';
-
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic } from 'semantic-ui-react'
+import { Carousel } from 'react-responsive-carousel'
+import ExternalLink from '../components/externallink'
 
 
 const search_location = [
@@ -143,16 +144,8 @@ class Index extends React.Component {
 
   async componentDidMount() {
     console.log('Index componentDidMount (client only)');
-  /*
-    var data = await this.fetchRoomDataSSR();
-
-    this.setState({
-      room_data: data
-    });
-  */
-
     console.log("+retrieveRoomInfo client");
-    fetch(BACKEND_URL + '/roominfo/', {
+    fetch(BACKEND_URL + '/rooms/', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -162,19 +155,26 @@ class Index extends React.Component {
       // res instanceof Response == true.
       if (res.ok) {
         res.json().then(data => {
+        //  console.log(data);
           this.setState({
             room_data: data
           });
           console.log('room data retrieve complete....');
-        /*
+
           var i;
           for (i = 0; i < data.length; i++) {
             console.log('data['+i+']:');
-            console.log('data['+i+'].url: '+ data[i].url);
+            console.log('data['+i+'].id: '+ data[i].id);
             console.log('data['+i+'].desc: '+ data[i].description);
-            console.log('data['+i+'].photo: '+ data[i].photo);
+            console.log('data['+i+'].room_photos: '+ data[i].room_photos.length);
+            if (data[i].room_photos.length > 0) {
+              var k;
+              for (k = 0 ; k < data[i].room_photos.length ; k++) {
+                console.log('data['+i+'].room_photos: '+ data[i].room_photos[k].photo);
+              }
+            }
           }
-        */
+
         });
       } else {
         console.log("Response wasn't perfect, status: ", res.status);
@@ -247,11 +247,6 @@ class Index extends React.Component {
         margin: '0 auto',
         marginTop: '50px',
     }
-    var priceStyle = {
-//        border: '1px solid red',
-        color: '#666666',
-  //      fontWeight: 'bold',
-    }
     var dropDownStyle = {
     //   border: '1px solid yellow',
        width: '20px',
@@ -265,29 +260,27 @@ class Index extends React.Component {
         return (
         <Grid.Column key={index}>
         <Card style={cardStyle}>
-          <Image src={ room.photo } />
+        {
+          (room.room_photos.length > 0) ?
+            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'><a><Image src={room.room_photos[0].photo} /></a></ExternalLink> :
+        //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
+            <Icon name='image' size='massive'/>
+        }
           <Card.Content>
             <Card.Header>
-              {room.description}
+              {room.title}
             </Card.Header>
-            <Card.Meta>
-              <span className='date'>
-              {
-              //  租金: <Label color='orange'>10000/月</Label>
-              }
-                租金:<strong style={priceStyle}>  10000/月</strong>
-              </span>
-            </Card.Meta>
             <Card.Description>
-              {
-                //room.url
-              }
+              <span>
+                <Statistic color='red' value={'$'+room.price_month} label='/月' size='mini' floated='right'/>
+              </span>
+              {room.description}
             </Card.Description>
           </Card.Content>
           <Card.Content extra>
             <a>
               <Icon name='user' />
-              99 讚
+              { parseInt(Math.random()*100) } 讚
             </a>
           </Card.Content>
         </Card>

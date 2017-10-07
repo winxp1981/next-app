@@ -78,7 +78,7 @@ var Footer = function (_React$Component) {
         height: '200px',
         //    height: '100px',
         //    backgroundColor: '#FFBB66',
-        paddingTop: '40px',
+        paddingTop: '80px',
         margin: '0 auto'
       };
       var dividerStyle = {
@@ -141,7 +141,7 @@ var Footer = function (_React$Component) {
           fileName: _jsxFileName,
           lineNumber: 52
         }
-      }, '2018 InstRent. All Rights Reserved.')));
+      }, '2018 Roomoca. All Rights Reserved.')));
     }
   }]);
 
