@@ -7,5 +7,7 @@
   "email_address": "電子郵件地址",
   "password": "密碼",
   "login_facebook": "facebook 登入",
-  "login_google": "Google+ 登入"
+  "login_google": "Google+ 登入",
+  "tenant": "我要租屋",
+  "roomhost": "成為房東"
 }

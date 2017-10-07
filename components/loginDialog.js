@@ -19,15 +19,17 @@ import Input from 'react-toolbox/lib/input/Input';
 import ReactLoading from 'react-loading';
 
 
-export function setUserCookie(username, email, token, valid) {
+export function setUserCookie(userpk, username, email, token, valid) {
+  jsCookie.set('userpk', userpk);
   jsCookie.set('username', username);
   jsCookie.set('email', email);
   jsCookie.set('token', token);
   jsCookie.set('valid', valid);
-  console.log('@@ setUserCookie ('+ username + ', ' + email + ', ' + token + ', ' + valid + ')');
+  console.log('@@ setUserCookie (' + userpk + ', ' + username + ', ' + email + ', ' + token + ', ' + valid + ')');
 }
 
 export function clearUserCookie() {
+  jsCookie.remove('userpk');
   jsCookie.remove('username');
   jsCookie.remove('email');
   jsCookie.remove('token');
@@ -92,8 +94,8 @@ async function getUserProfile(key) {
     console.log(response.status);
     //console.log(data);
     if (response.status === 200) {
-      console.log('getUserProfile success, username: '+ data.username);
-      setUserCookie (data.username, data.email, key, true);
+      console.log('getUserProfile success, username: '+ data.username +', pk = ' + data.pk);
+      setUserCookie (data.pk, data.username, data.email, key, true);
       //Header.isUserLoggedIn = true;
       // redirect to home
       Router.push('/');

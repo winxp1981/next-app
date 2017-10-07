@@ -7,5 +7,7 @@
   "email_address": "Email address",
   "password": "Password",
   "login_facebook": "Login with facebook",
-  "login_google": "Login with Google"
+  "login_google": "Login with Google",
+  "tenant": "Find a room",
+  "roomhost": "Become host",
 }

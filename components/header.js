@@ -1,14 +1,11 @@
 import React from 'react';
 //import Link from 'next/link'
 import { Link } from "../routes";
-import Cookies from 'universal-cookie';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { initStore, addCount, setUsername } from '../store'
 import { translate } from 'react-i18next'
 import Head from 'next/head'
-import ThemeProvider from 'react-toolbox/lib/ThemeProvider'
-import theme from '../static/theme'
 import LoginDialog from './loginDialog'
 
 //import ReactDOM from 'react-dom';
@@ -57,59 +54,19 @@ class Header extends React.Component {
     var loginDisplay = '';
     var isUserLoggedIn = false;
 
-    // check CurrentUser is not null (conditional rendering)
-    /*
-    if (process.browser) {
-      const cookies = new Cookies();
-      currentUserName = cookies.get('username');
-      if (currentUserName) {
-          isUserLoggedIn = true;
-          console.log('current user: ' + currentUserName);
-      }
-    } else {
-      // server side
-      // TODO: how to get server cookies?
-         currentUserName = 'morris';
-         isUserLoggedIn = true;
-    }
-    */
-/*
-    if (this.props.username) {
-        // note: can only return "one" root element in a variable
-        loginDisplay =
-            <li className="dropdown top_menu">
-                <a className="dropdown-toggle top_item" data-toggle="dropdown" href="#">
-                    <span className="glyphicon glyphicon-user"></span>
-                    { ' ' + this.props.username }
-                </a>
-                <ul className="dropdown-menu">
-                  <li><a href="#">Profile</a></li>
-                  <li><a href="#" onClick={this.handleLogout}>Logout</a></li>
-                </ul>
-            </li>;
-    }
-    else {
-      //  loginDisplay = <li className="top_menu"><Link href='/login'><a className="top_item"> {this.t('login')} </a></Link></li>;
-      //  loginDisplay = <li className="top_menu"><Button label={this.t('login')} onClick={this.handleToggle} /></li>;
-      loginDisplay = <li className="top_menu"><a className="top_item" href='#' onClick={this.handleToggleLogin}> {this.t('login')} </a></li>;
-    }
-*/
     return (
     <div className='header'>
         <img src="../static/img/react.png" width="80" height="80" alt="" />
         <ul className='header'>
         { /* user Link to avoid trigger server render */ }
-        <li className="top_menu"><Link route='about' params={{id: '888'}}><a className="top_item">
-         {this.t('about')}
-         </a></Link></li>
          {
          <li className="top_menu"><Link route='/'><a className="top_item">
-         {this.t('租屋')}
+         {this.t('tenant')}
          </a></Link></li>
          }
          {
          <li className="top_menu"><Link route='/host'><a className="top_item">
-         {this.t('房東')}
+         {this.t('roomhost')}
          </a></Link></li>
          }
          {

@@ -15,3 +15,7 @@ pm2 stop 0
 
 [Clear babel cache]
 rm -rfv ./node_modules/.cache/babel-loader/*
+
+componentWillMount -> render -> componentDidMount
+----------------------------- (server only)
+------------------------------------------------- (server+client))

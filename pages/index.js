@@ -35,32 +35,6 @@ class Index extends React.Component {
     console.log(data.value);
   };
 
-  async retrieveRoomInfo() {
-      console.log("+retrieveRoomInfo");
-      var response = await fetch(BACKEND_URL + '/roominfo/', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-      });
-
-      var result = false;
-      var data = await response.json();
-      console.log(response.status);
-      //console.log(data);
-      if (response.status === 200) {
-        console.log('retrieveRoomInfo success: '+ data);
-        result = true;
-      }
-      else {
-        result = false;
-      }
-
-      console.log("-retrieveRoomInfo");
-      return result;
-  }
-
   static async getInitialProps({ req , store, isServer}) {  // only support in server side if there is req in parameter
     const initProps = {};
     if (req && req.headers) {
@@ -92,7 +66,7 @@ class Index extends React.Component {
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setLocale(initProps.locale));
 
-    // get roominfo from server
+/*
     console.log("+retrieveRoomInfo");
     var response = await fetch(BACKEND_URL + '/roominfo/', {
         method: 'GET',
@@ -107,15 +81,12 @@ class Index extends React.Component {
     console.log(response.status);
     //console.log(data);
     if (response.status === 200) {
-/*
       var i;
       for (i = 0; i < data.length; i++) {
-        console.log('data['+i+']:');
         console.log('data['+i+'].url: '+ data[i].url);
         console.log('data['+i+'].desc: '+ data[i].description);
         console.log('data['+i+'].photo: '+ data[i].photo);
       }
-*/
       initProps.room_data = data;
       result = true;
     }
@@ -124,12 +95,100 @@ class Index extends React.Component {
     }
 
     console.log("-retrieveRoomInfo");
-  //  return result;
+*/
 
+    if (isServer) {
+    }
     return initProps;
   }
 
+  async fetchRoomDataSSR() {
+    console.log("+fetchRoomDataSSR");
+    var response = await fetch(BACKEND_URL + '/roominfo/', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+    });
+
+    var result = false;
+    var data = await response.json();
+    console.log(response.status);
+    //console.log(data);
+    if (response.status === 200) {
+      var i;
+      for (i = 0; i < data.length; i++) {
+        console.log('data['+i+'].url: '+ data[i].url);
+        console.log('data['+i+'].desc: '+ data[i].description);
+        console.log('data['+i+'].photo: '+ data[i].photo);
+      }
+    }
+    else {
+      data = [];
+    }
+    console.log("-fetchRoomDataSSR");
+    return data;
+  }
+
+  async componentWillMount() {
+    if (!process.browser) { // server
+      console.log('Index componentWillMount on server');
+    }
+  }
+
+  componentWillUnmount() {
+    console.log('@@ componentWillUnmount');
+  }
+
+  async componentDidMount() {
+    console.log('Index componentDidMount (client only)');
+  /*
+    var data = await this.fetchRoomDataSSR();
+
+    this.setState({
+      room_data: data
+    });
+  */
+
+    console.log("+retrieveRoomInfo client");
+    fetch(BACKEND_URL + '/roominfo/', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+    }).then(res => {
+      // res instanceof Response == true.
+      if (res.ok) {
+        res.json().then(data => {
+          this.setState({
+            room_data: data
+          });
+          console.log('room data retrieve complete....');
+        /*
+          var i;
+          for (i = 0; i < data.length; i++) {
+            console.log('data['+i+']:');
+            console.log('data['+i+'].url: '+ data[i].url);
+            console.log('data['+i+'].desc: '+ data[i].description);
+            console.log('data['+i+'].photo: '+ data[i].photo);
+          }
+        */
+        });
+      } else {
+        console.log("Response wasn't perfect, status: ", res.status);
+      }
+    }, function(e) {
+      console.log("Fetch failed!", e);
+    });
+
+    console.log("-retrieveRoomInfo client");
+  }
+
+
   constructor (props) {
+    console.log ('+Index ctor')
     super(props);
     this.i18n = startI18n(props.translations, props.locale);
 
@@ -138,11 +197,9 @@ class Index extends React.Component {
       offset: 0,
       value: 'Taipei City',
     }
+    console.log ('-Index ctor')
   }
 
-  componentDidMount() {
-    // does NOT get called on server side
-  }
 
   handleInputChange(event) {
     const target = event.target;
@@ -203,7 +260,7 @@ class Index extends React.Component {
        marginTop: '0',
     }
     // render room infos
-    let roomCards = this.props.room_data.map(function(room, index) {
+    let roomCards = this.state.room_data.map(function(room, index) {
 
         return (
         <Grid.Column key={index}>
@@ -266,7 +323,7 @@ class Index extends React.Component {
             </Carousel>
             <div style={searchDivStyle}>
               <Dropdown style={dropDownStyle} placeholder='不限地區' search selection options={search_location} onChange={this.handleChange}/>
-              <Input style={inputStyle} size='medium' type='text' placeholder='搜尋' name='search' onChange={this.handleInputChange} action>
+              <Input style={inputStyle} size='medium' type='text' placeholder='搜尋好房屋' name='search' onChange={this.handleInputChange} action>
                 <input />
                 <Button type='submit' color='orange'><Icon name='search' /> Search</Button>
               </Input>

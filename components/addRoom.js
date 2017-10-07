@@ -1,13 +1,16 @@
 import React from 'react';
 //import Link from 'next/link'
-import Cookies from 'universal-cookie';
+import jsCookie from 'js-cookie';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { translate } from 'react-i18next'
 import Head from 'next/head'
 // https://react-dropzone.js.org/
 import Dropzone from 'react-dropzone'
-import { Button, Icon, Progress, List, Input, TextArea, Label, Item, Divider, Dropdown, Checkbox } from 'semantic-ui-react'
+import {
+  Button, Icon, Progress, List, Input, TextArea, Label,
+  Item, Divider, Dropdown, Checkbox, Message
+} from 'semantic-ui-react'
 import _ from 'lodash'
 
 const building_type = [
@@ -32,7 +35,7 @@ class AddRoom extends React.Component {
     });
   }
 
-  async addRoom() {
+  async addRoom(userpk) {
     console.log("+addRoom");
     var response = await fetch(BACKEND_URL + '/rooms/', {
         method: 'POST',
@@ -42,7 +45,7 @@ class AddRoom extends React.Component {
         },
         body: JSON.stringify(
           {
-            host: 1, // TODO: 登入後把 pk 存在cookie
+            host: userpk, // get pk from cookie
             location: this.state.location,
             title: this.state.title,
             description: this.state.description,
@@ -80,7 +83,7 @@ class AddRoom extends React.Component {
         )
     });
 
-    var result = false;
+    var room_id = -1;
     var data = await response.json();
     console.log(response.status);
     //console.log(data);
@@ -89,15 +92,16 @@ class AddRoom extends React.Component {
     {
       console.log(data);
       // TODO: id 當做回傳值
-      result = true;
+      console.log('room id : ' + data.id);
+      room_id = data.id;
     }
     else {
       console.log(data);
-      result = false;
+      room_id = -1;
     }
 
     console.log("-addRoom");
-    return result;
+    return room_id;
   }
 
   async uploadRoomPhotos(_key, room_id, _files) {
@@ -194,13 +198,29 @@ class AddRoom extends React.Component {
   handleUpload = async () => {
     console.log('+handleUpload');
     // print state for debugging
+    var userpk = jsCookie.get('userpk');
+    console.log('pk: '+ userpk);
+    if(userpk === undefined) {
+      console.log('請先登入');
+      this.setState({
+        message_to_user: '請先登入'
+      });
+      return;
+    } else {
+      this.setState({
+        message_to_user: ''
+      });
+    }
+
     this.showInputState();
     this.showCheckboxState();
 
-    await this.addRoom();
+    let room_id = await this.addRoom(userpk);
 
-  //  console.log('@@ total: '+this.state.files.length + ' files')
-    await this.uploadRoomPhotos(0, 5, this.state.files);
+    if (room_id > 0) {
+       //  console.log('@@ total: '+this.state.files.length + ' files')
+      await this.uploadRoomPhotos(0, room_id, this.state.files);
+    }
     console.log('-handleUpload');
   }
 
@@ -247,6 +267,7 @@ class AddRoom extends React.Component {
       current_file_index: 0,
       total_files: 1,
       uploading: false,
+      message_to_user: '',
 
       location: '',
       title: '',
@@ -424,6 +445,11 @@ class AddRoom extends React.Component {
         </aside>
         { (this.state.files.length > 0 && this.state.uploading)? <Progress value={this.state.current_file_index} total={this.state.total_files} color='yellow' /> : ''}
         <Button color='green' onClick={this.handleUpload}><Icon name='plus' />add</Button>
+        { (this.state.message_to_user.length > 0) ?
+        <Message negative>
+          <Message.Header>{ this.state.message_to_user } </Message.Header>
+        </Message>
+        : '' }
       </section>
     );
   }

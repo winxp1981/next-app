@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import Header from './header'
-import { Segment, Divider } from 'semantic-ui-react'
+import Footer from './footer'
 
 class Layout extends React.Component {
   constructor(props) {
@@ -9,15 +9,6 @@ class Layout extends React.Component {
   }
 
   render () {
-
-    var footerStyle = {
-    //    border: '1px solid red',
-        width: '100%',
-      //  height: '200px',
-    //    height: '100px',
-    //    backgroundColor: '#FFBB66',
-        paddingTop: '40px',
-    }
 
     return (
       <div>
@@ -41,14 +32,7 @@ class Layout extends React.Component {
 
         { this.props.children }
 
-        <div style={footerStyle}>
-        <Divider />
-        <Segment.Group horizontal>
-          <Segment>Left</Segment>
-          <Segment>Middle</Segment>
-          <Segment>Right</Segment>
-        </Segment.Group>
-        </div>
+        <Footer />
       </div>
     );
   }
