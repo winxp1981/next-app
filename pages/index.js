@@ -16,9 +16,10 @@ import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic } from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
-import ExternalLink from '../components/externallink'
+import ExternalLink from '../components/externallink'  // for target='_blank'
+import LazyLoad from 'react-lazyload';
 
 
 const search_location = [
@@ -27,6 +28,7 @@ const search_location = [
   { key: 3, text: '新北市', value: 3 },
   { key: 4, text: '新竹市', value: 4 },
 ]
+
 
 class Index extends React.Component {
 
@@ -66,37 +68,6 @@ class Index extends React.Component {
 
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setLocale(initProps.locale));
-
-/*
-    console.log("+retrieveRoomInfo");
-    var response = await fetch(BACKEND_URL + '/roominfo/', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-    });
-
-    var result = false;
-    var data = await response.json();
-    console.log(response.status);
-    //console.log(data);
-    if (response.status === 200) {
-      var i;
-      for (i = 0; i < data.length; i++) {
-        console.log('data['+i+'].url: '+ data[i].url);
-        console.log('data['+i+'].desc: '+ data[i].description);
-        console.log('data['+i+'].photo: '+ data[i].photo);
-      }
-      initProps.room_data = data;
-      result = true;
-    }
-    else {
-      result = false;
-    }
-
-    console.log("-retrieveRoomInfo");
-*/
 
     if (isServer) {
     }
@@ -262,7 +233,9 @@ class Index extends React.Component {
         <Card style={cardStyle}>
         {
           (room.room_photos.length > 0) ?
-            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'><a><Image src={room.room_photos[0].photo} /></a></ExternalLink> :
+            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'><a>
+              <LazyLoad placeholder={<Loader active inline='centered' size='large' content='Loading'/>} height={100}><Image src={room.room_photos[0].photo} /></LazyLoad>
+              </a></ExternalLink> :
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
         }
@@ -291,7 +264,7 @@ class Index extends React.Component {
 
     return (
     <I18nextProvider i18n={this.i18n}>
-    <Layout title = "Welcome to InstRent">
+    <Layout title = "Welcome to Roomoca">
         {
         //   <div className='jumbotron'><h1>HOME</h1></div>
         }

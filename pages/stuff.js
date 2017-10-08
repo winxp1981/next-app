@@ -152,7 +152,7 @@ class Stuff extends React.Component {
   //  console.log("render MAP (" + this.state.center.lat + ", " + this.state.center.lng + ")");
     return (
       <I18nextProvider i18n={this.i18n}>
-      <Layout title = "Welcome to InstRent">
+      <Layout title = "Welcome to Roomoca">
       <div style={{height: `700px`}}>
       { this.state.position_initialized ? (
         <GettingStartedGoogleMap

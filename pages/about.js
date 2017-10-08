@@ -34,9 +34,8 @@ class About extends React.Component {
   render () {
     return (
       <I18nextProvider i18n={this.i18n}>
-      <Layout title = "Welcome to InstRent">
-        <div className='jumbotron'><h1>About us</h1></div>
-        <div className='jumbotron'><h1>{this.props.url.query.id}</h1></div>
+      <Layout title = "Welcome to Roomoca">
+        <div className='jumbotron'><h1>About param: {this.props.url.query.id}</h1></div>
         <Head>
         </Head>
         <div>

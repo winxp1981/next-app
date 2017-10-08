@@ -45,7 +45,7 @@ class RoomHost extends React.Component {
     }
     return (
       <I18nextProvider i18n={this.i18n}>
-      <Layout title = "Welcome to InstRent">
+      <Layout title = "Welcome to Roomoca">
         <div style={headerDivStyle}>
           <Header as='h1' icon >
             <Icon name='home' color='orange' size='huge' />
