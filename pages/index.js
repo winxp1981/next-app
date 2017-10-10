@@ -18,7 +18,7 @@ import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
 import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
-import ExternalLink from '../components/externallink'  // for target='_blank'
+import ExternalLink from '../components/externalLink'  // for target='_blank'
 import LazyLoad from 'react-lazyload';
 
 
@@ -233,9 +233,9 @@ class Index extends React.Component {
         <Card style={cardStyle}>
         {
           (room.room_photos.length > 0) ?
-            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'><a>
+            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
               <LazyLoad placeholder={<Loader active inline='centered' size='large' content='Loading'/>} height={100}><Image src={room.room_photos[0].photo} /></LazyLoad>
-              </a></ExternalLink> :
+            </ExternalLink> :
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
         }
@@ -265,9 +265,6 @@ class Index extends React.Component {
     return (
     <I18nextProvider i18n={this.i18n}>
     <Layout title = "Welcome to Roomoca">
-        {
-        //   <div className='jumbotron'><h1>HOME</h1></div>
-        }
         <Head>
           <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
         </Head>

@@ -4,6 +4,7 @@ sudo npm install pm2 -g
 
 npm run build
 pm2 start npm --name "next" -- start
+(切到root再啟動server for port 80)
 
 pm2 show 0
 pm2 stop 0

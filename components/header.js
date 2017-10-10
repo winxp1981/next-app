@@ -7,21 +7,11 @@ import { initStore, addCount, setUsername } from '../store'
 import { translate } from 'react-i18next'
 import Head from 'next/head'
 import LoginDialog from './loginDialog'
-
 //import ReactDOM from 'react-dom';
-/*
-import {
-    Button,
-} from 'reactstrap';
 
-import {
-    Link,
-} from 'react-router-dom'
-*/
 import {
     logoutUser
 } from './loginDialog'
-//import { FormattedMessage } from 'react-intl';
 
 class Header extends React.Component {
   state = {

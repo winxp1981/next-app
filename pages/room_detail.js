@@ -1,20 +1,22 @@
 import React from 'react';
 import Layout from '../components/layout'
+import Cookies from 'universal-cookie'
 import { bindActionCreators } from 'redux'
-import { initStore, addCount, setUsername } from '../store'
+import { initStore, addCount, setUsername, setLocale} from '../store'
 import withRedux from 'next-redux-wrapper'
 import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header} from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider} from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
+import RoomMap from '../components/roomMap'
 
 
 class RoomDetail extends React.Component {
 
-  static async getInitialProps({ req, store, query }) {  // only support in server side if there is req in parameter
+  static async getInitialProps({ req, store, query, isServer }) {  // only support in server side if there is req in parameter
     const initProps = {};
     initProps.locale = 'tw';
     const translations = await getTranslation(
@@ -23,6 +25,18 @@ class RoomDetail extends React.Component {
       FRONTEND_URL+'/static/locales/'
     )
     initProps.translations = translations;
+
+    if (isServer) {
+      console.log("RoomDetail getInitialProps isSserver: "+ isServer);
+      const cookies = new Cookies(req.headers.cookie);
+      console.log("@@ cookies username = " + cookies.get('username'));
+      console.log("@@ cookies email = " + cookies.get('email'));
+      console.log("@@ cookies token = " + cookies.get('token'));
+      initProps.username = cookies.get('username');
+
+      store.dispatch(setUsername(initProps.username));
+      store.dispatch(setLocale(initProps.locale));
+    }
 
     // fetch room detail
     console.log('RoomDetail (id: ' + query.id +')');
@@ -107,10 +121,44 @@ class RoomDetail extends React.Component {
                 </Grid.Column>
                 <Grid.Column width={6} style={testBorder}>
                 <div>
-                    <div>暫時留白</div>
+                  <List divided>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>坪數</Label>
+                      {this.props.room_detail.area}
+                    </List.Item>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>格局</Label>
+                      {this.props.room_detail.layout}
+                    </List.Item>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>樓層</Label>
+                      {this.props.room_detail.floor}
+                    </List.Item>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>屋齡</Label>
+                      {this.props.room_detail.age}
+                    </List.Item>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>類型</Label>
+                      {this.props.room_detail.building_type}
+                    </List.Item>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>房型</Label>
+                      {this.props.room_detail.room_type}
+                    </List.Item>
+                    <List.Item>
+                      <Label color='orange' horizontal size='large'>車位</Label>
+                      {this.props.room_detail.parking ? '有':'無'}
+                    </List.Item>
+                  </List>
+                </div>
+                <Divider />
+                <div>
+                    <div><Header as='h2' disabled>租金</Header>
                     <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/月' size='mini' /></div>
                     <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_quarter} label='/季' size='mini' /></div>
                     <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_year} label='/年' size='mini' /></div>
+                    </div>
                 </div>
                 </Grid.Column>
               </Grid.Row>
@@ -121,77 +169,78 @@ class RoomDetail extends React.Component {
                 <Grid.Column width={8} style={testBorder}>
                 <div>
                   { this.props.room_detail.balcony ?
-                    <Label content='陽台' icon='checkmark' color='green' size='large'/> :
-                    <Label content='陽台' icon='remove' size='large'/>
+                    <Label content='陽台' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='陽台' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.pet ?
-                    <Label content='養寵物' icon='checkmark' color='green' size='large'/> :
-                    <Label content='養寵物' icon='remove' size='large'/>
+                    <Label content='養寵物' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='養寵物' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.cook ?
-                    <Label content='開伙' icon='checkmark' color='green' size='large'/> :
-                    <Label content='開伙' icon='remove' size='large'/>
+                    <Label content='開伙' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='開伙' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.tv ?
-                    <Label content='電視' icon='checkmark' color='green' size='large'/> :
-                    <Label content='電視' icon='remove' size='large'/>
+                    <Label content='電視' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='電視' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.ac ?
-                    <Label content='冷氣' icon='checkmark' color='green' size='large'/> :
-                    <Label content='冷氣' icon='remove' size='large'/>
+                    <Label content='冷氣' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='冷氣' icon='remove' size='medium'/>
                   }
                 </div>
                 <br />
                 <div>
                   { this.props.room_detail.ref ?
-                    <Label content='冰箱' icon='checkmark' color='green' size='large'/> :
-                    <Label content='冰箱' icon='remove' size='large'/>
+                    <Label content='冰箱' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='冰箱' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.water_hearter ?
-                    <Label content='熱水器' icon='checkmark' color='green' size='large'/> :
-                    <Label content='熱水器' icon='remove' size='large'/>
+                    <Label content='熱水器' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='熱水器' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.natural_gas ?
-                    <Label content='天然瓦斯' icon='checkmark' color='green' size='large'/> :
-                    <Label content='天然瓦斯' icon='remove' size='large'/>
+                    <Label content='天然瓦斯' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='天然瓦斯' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.cabel_tv ?
-                    <Label content='第四台' icon='checkmark' color='green' size='large'/> :
-                    <Label content='第四台' icon='remove' size='large'/>
+                    <Label content='第四台' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='第四台' icon='remove' size='medium'/>
                   }
                   { this.props.room_detail.network ?
-                    <Label content='網路' icon='checkmark' color='green' size='large'/> :
-                    <Label content='網路' icon='remove' size='large'/>
+                    <Label content='網路' icon='checkmark' color='blue' size='medium'/> :
+                    <Label content='網路' icon='remove' size='medium'/>
                   }
                   </div>
                   <br />
                   <div>
                     { this.props.room_detail.wash_machine ?
-                      <Label content='洗衣機' icon='checkmark' color='green' size='large'/> :
-                      <Label content='洗衣機' icon='remove' size='large'/>
+                      <Label content='洗衣機' icon='checkmark' color='blue' size='medium'/> :
+                      <Label content='洗衣機' icon='remove' size='medium'/>
                     }
                     { this.props.room_detail.bed ?
-                      <Label content='床' icon='checkmark' color='green' size='large'/> :
-                      <Label content='床' icon='remove' size='large'/>
+                      <Label content='床' icon='checkmark' color='blue' size='medium'/> :
+                      <Label content='床' icon='remove' size='medium'/>
                     }
                     { this.props.room_detail.wardrobe ?
-                      <Label content='衣櫃' icon='checkmark' color='green' size='large'/> :
-                      <Label content='衣櫃' icon='remove' size='large'/>
+                      <Label content='衣櫃' icon='checkmark' color='blue' size='medium'/> :
+                      <Label content='衣櫃' icon='remove' size='medium'/>
                     }
                     { this.props.room_detail.table ?
-                      <Label content='桌子' icon='checkmark' color='green' size='large'/> :
-                      <Label content='桌子' icon='remove' size='large'/>
+                      <Label content='桌子' icon='checkmark' color='blue' size='medium'/> :
+                      <Label content='桌子' icon='remove' size='medium'/>
                     }
                     { this.props.room_detail.sofa ?
-                      <Label content='沙發' icon='checkmark' color='green' size='large'/> :
-                      <Label content='沙發' icon='remove' size='large'/>
+                      <Label content='沙發' icon='checkmark' color='blue' size='medium'/> :
+                      <Label content='沙發' icon='remove' size='medium'/>
                     }
                     </div>
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row style={testBorder}>
                 <Grid.Column style={testBorder}>
-                  <Header as='h4'>{ this.props.room_detail.location }</Header>
+                  <Header as='h2' disabled >{ this.props.room_detail.location }</Header>
+                  <RoomMap width='720px' height='350px' address={ this.props.room_detail.location } />
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -203,11 +252,20 @@ class RoomDetail extends React.Component {
   }
 }
 
+
 const mapStateToProps = (state) => {
   return {
     username: state.username,
-    count: state.count,
+    locale: state.locale,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addCount: bindActionCreators(addCount, dispatch),
+    setUsername: bindActionCreators(setUsername, dispatch),
+    setLocale: bindActionCreators(setLocale, dispatch),
   }
 }
 // export default About
-export default withRedux(initStore, mapStateToProps, null)(RoomDetail)
+export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(RoomDetail)
