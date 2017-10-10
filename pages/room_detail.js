@@ -9,7 +9,7 @@ import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider} from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment} from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import RoomMap from '../components/roomMap'
 
@@ -95,8 +95,13 @@ class RoomDetail extends React.Component {
         marginTop: '0px',
     }
     var testBorder = {
-    //    border: '1px solid blue',
+      //  border: '1px solid blue',
     }
+    var attrDivStyle = {
+    //  border: '1px solid red',
+    //  backgroundColor: 'rgba(240, 240, 240, 1)',
+    }
+    var attrLabelColor = 'orange'
     return (
       <I18nextProvider i18n={this.i18n}>
       <Layout title = "Welcome to Roomoca">
@@ -114,7 +119,7 @@ class RoomDetail extends React.Component {
               <Grid.Row style={testBorder}>
                 <Grid.Column width={10} style={testBorder}>
                 <div style={carouselDivStyle}>
-                  <Carousel showStatus={true} showIndicators={true} showThumbs={false} infiniteLoop={false} autoPlay={false} dynamicHeight={true}>
+                  <Carousel showStatus={true} showIndicators={true} showThumbs={true} infiniteLoop={false} autoPlay={false} dynamicHeight={true}>
                     { roomPhotos }
                   </Carousel>
                 </div>
@@ -164,77 +169,83 @@ class RoomDetail extends React.Component {
               </Grid.Row>
               <Grid.Row style={testBorder}>
                 <Grid.Column width={8} style={testBorder}>
+                <Segment color='yellow'>
                   <Header as='h3'>{ this.props.room_detail.description }</Header>
+                </Segment>
                 </Grid.Column>
                 <Grid.Column width={8} style={testBorder}>
-                <div>
+                <Segment color='yellow'>
+                <div style={attrDivStyle}>
+                  <div>
                   { this.props.room_detail.balcony ?
-                    <Label content='陽台' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='陽台' icon='remove' size='medium'/>
+                    <Label content='陽台' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='陽台' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.pet ?
-                    <Label content='養寵物' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='養寵物' icon='remove' size='medium'/>
+                    <Label content='養寵物' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='養寵物' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.cook ?
-                    <Label content='開伙' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='開伙' icon='remove' size='medium'/>
+                    <Label content='開伙' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='開伙' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.tv ?
-                    <Label content='電視' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='電視' icon='remove' size='medium'/>
+                    <Label content='電視' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='電視' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.ac ?
-                    <Label content='冷氣' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='冷氣' icon='remove' size='medium'/>
+                    <Label content='冷氣' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='冷氣' icon='remove' size='medium' circular={true}/>
                   }
                 </div>
                 <br />
                 <div>
                   { this.props.room_detail.ref ?
-                    <Label content='冰箱' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='冰箱' icon='remove' size='medium'/>
+                    <Label content='冰箱' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='冰箱' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.water_hearter ?
-                    <Label content='熱水器' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='熱水器' icon='remove' size='medium'/>
+                    <Label content='熱水器' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='熱水器' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.natural_gas ?
-                    <Label content='天然瓦斯' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='天然瓦斯' icon='remove' size='medium'/>
+                    <Label content='天然瓦斯' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='天然瓦斯' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.cabel_tv ?
-                    <Label content='第四台' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='第四台' icon='remove' size='medium'/>
+                    <Label content='第四台' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='第四台' icon='remove' size='medium' circular={true}/>
                   }
                   { this.props.room_detail.network ?
-                    <Label content='網路' icon='checkmark' color='blue' size='medium'/> :
-                    <Label content='網路' icon='remove' size='medium'/>
+                    <Label content='網路' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                    <Label content='網路' icon='remove' size='medium' circular={true}/>
                   }
                   </div>
                   <br />
                   <div>
                     { this.props.room_detail.wash_machine ?
-                      <Label content='洗衣機' icon='checkmark' color='blue' size='medium'/> :
-                      <Label content='洗衣機' icon='remove' size='medium'/>
+                      <Label content='洗衣機' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                      <Label content='洗衣機' icon='remove' size='medium' circular={true}/>
                     }
                     { this.props.room_detail.bed ?
-                      <Label content='床' icon='checkmark' color='blue' size='medium'/> :
-                      <Label content='床' icon='remove' size='medium'/>
+                      <Label content='床' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                      <Label content='床' icon='remove' size='medium' circular={true}/>
                     }
                     { this.props.room_detail.wardrobe ?
-                      <Label content='衣櫃' icon='checkmark' color='blue' size='medium'/> :
-                      <Label content='衣櫃' icon='remove' size='medium'/>
+                      <Label content='衣櫃' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                      <Label content='衣櫃' icon='remove' size='medium' circular={true}/>
                     }
                     { this.props.room_detail.table ?
-                      <Label content='桌子' icon='checkmark' color='blue' size='medium'/> :
-                      <Label content='桌子' icon='remove' size='medium'/>
+                      <Label content='桌子' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                      <Label content='桌子' icon='remove' size='medium' circular={true}/>
                     }
                     { this.props.room_detail.sofa ?
-                      <Label content='沙發' icon='checkmark' color='blue' size='medium'/> :
-                      <Label content='沙發' icon='remove' size='medium'/>
+                      <Label content='沙發' icon='checkmark' color={attrLabelColor} size='medium' circular={true}/> :
+                      <Label content='沙發' icon='remove' size='medium' circular={true}/>
                     }
                     </div>
+                  </div>
+                  </Segment>
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row style={testBorder}>

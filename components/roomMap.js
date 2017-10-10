@@ -12,7 +12,6 @@ import { getTranslation } from '../tools/translationHelpers'
 import { Loader } from 'semantic-ui-react'
 
 
-
 const GettingStartedGoogleMap = withGoogleMap(props => (
   <GoogleMap
     ref={props.onMapLoad}

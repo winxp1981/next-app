@@ -20,7 +20,7 @@ import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader } fro
 import { Carousel } from 'react-responsive-carousel'
 import ExternalLink from '../components/externalLink'  // for target='_blank'
 import LazyLoad from 'react-lazyload';
-
+import ReactLoading from 'react-loading';
 
 const search_location = [
   { key: 1, text: '不限地區', value: 1 },
@@ -234,7 +234,8 @@ class Index extends React.Component {
         {
           (room.room_photos.length > 0) ?
             <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
-              <LazyLoad placeholder={<Loader active inline='centered' size='large' content='Loading'/>} height={100}><Image src={room.room_photos[0].photo} /></LazyLoad>
+              <LazyLoad placeholder={<ReactLoading type='bars' color='#444' height='80' width='80' delay='0' />}
+              height={100}><Image src={room.room_photos[0].photo} /></LazyLoad>
             </ExternalLink> :
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
