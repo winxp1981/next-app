@@ -50,13 +50,13 @@ class Header extends React.Component {
         <ul className='header'>
         { /* user Link to avoid trigger server render */ }
          {
-         <li className="top_menu"><Link route='/'><a className="top_item">
-         {this.t('tenant')}
+         <li className="top_menu"><Link route='/host'><a className="top_item">
+         {this.t('roomhost')}
          </a></Link></li>
          }
          {
-         <li className="top_menu"><Link route='/host'><a className="top_item">
-         {this.t('roomhost')}
+         <li className="top_menu"><Link route='/'><a className="top_item">
+         {this.t('tenant')}
          </a></Link></li>
          }
          {

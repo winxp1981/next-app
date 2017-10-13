@@ -9,7 +9,7 @@ import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment} from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment, Button, Table } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import RoomMap from '../components/roomMap'
 
@@ -95,18 +95,28 @@ class RoomDetail extends React.Component {
         marginTop: '0px',
     }
     var testBorder = {
-      //  border: '1px solid blue',
+    //    border: '1px solid blue',
+    //    position: 'relative',
     }
     var attrDivStyle = {
     //  border: '1px solid red',
     //  backgroundColor: 'rgba(240, 240, 240, 1)',
     }
     var attrLabelColor = 'orange'
+
+    var btnDivStyle = {
+  //    border: '1px solid red',
+        marginTop: '50px',
+    //  backgroundColor: 'rgba(240, 240, 240, 1)',
+    //  position: 'absolute',
+    //  bottom: '50px',
+    }
     return (
       <I18nextProvider i18n={this.i18n}>
       <Layout title = "Welcome to Roomoca">
       <Head>
         <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBNKKAhKocKWQ43dc6NT3fCyaLPTdxmAX0" type="text/javascript"></script>
       </Head>
         <div>
           <div style={gridDivStyle}>
@@ -159,11 +169,53 @@ class RoomDetail extends React.Component {
                 </div>
                 <Divider />
                 <div>
+                {
+                  /*
                     <div><Header as='h2' disabled>租金</Header>
-                    <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/月' size='mini' /></div>
-                    <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_quarter} label='/季' size='mini' /></div>
-                    <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_year} label='/年' size='mini' /></div>
+                      <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/月' size='mini' /></div>
+                      <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_quarter} label='/季' size='mini' /></div>
+                      <div><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_year} label='/年' size='mini' /></div>
                     </div>
+                  */
+                }
+                <Table size='large' unstackable color='orange'>
+                  <Table.Header>
+                    <Table.Row textAlign='center'>
+                      <Table.HeaderCell></Table.HeaderCell>
+                      <Table.HeaderCell>租金</Table.HeaderCell>
+                      <Table.HeaderCell>押金</Table.HeaderCell>
+                      <Table.HeaderCell>服務費</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+
+                  <Table.Body>
+                    <Table.Row textAlign='center'>
+                      <Table.Cell>月繳</Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/月' size='mini'/></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} size='mini'/></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/年' size='mini'/></Table.Cell>
+                    </Table.Row>
+                    <Table.Row textAlign='center'>
+                      <Table.Cell>季繳</Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_quarter/3} label='/月' size='mini' /></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} size='mini'/></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/年' size='mini'/></Table.Cell>
+                    </Table.Row>
+                    <Table.Row textAlign='center'>
+                      <Table.Cell>年繳</Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_year/12} label='/月' size='mini' /></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} size='mini'/></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/年' size='mini'/></Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table>
+                </div>
+                <div style={btnDivStyle}>
+                  <Button color='brown' size='huge'>我要看房</Button>
+                  <Button color='green' size='huge'>我要租</Button>
+                </div>
+                <div style={btnDivStyle}>
+                  <Button color='blue' icon={<Icon name='share alternate' />} content='分享' size='huge'/>
                 </div>
                 </Grid.Column>
               </Grid.Row>

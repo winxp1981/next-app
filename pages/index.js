@@ -234,8 +234,8 @@ class Index extends React.Component {
         {
           (room.room_photos.length > 0) ?
             <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
-              <LazyLoad placeholder={<ReactLoading type='bars' color='#444' height='80' width='80' delay='0' />}
-              height={100}><Image src={room.room_photos[0].photo} /></LazyLoad>
+              <LazyLoad placeholder={<ReactLoading type='bars' color='#444' height={80} width={80} delay={0} />}
+              height={100}><img src={room.room_photos[0].photo} width='100%' className='roomCardImg' /></LazyLoad>
             </ExternalLink> :
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
@@ -252,12 +252,19 @@ class Index extends React.Component {
             </Card.Description>
           </Card.Content>
           <Card.Content extra>
-            <a>
-              <Icon name='user' />
-              { parseInt(Math.random()*100) } 讚
-            </a>
+            <Button label={<Label>{parseInt(Math.random()*100)}</Label>} color='orange' icon='heart' content='' />
           </Card.Content>
         </Card>
+        <style jsx>{`
+          img.roomCardImg {
+          	opacity: 1;
+          	-webkit-transition: .3s ease-in-out;
+          	transition: .3s ease-in-out;
+          }
+          img.roomCardImg:hover {
+        	  opacity: .8;
+          }
+  `}</style>
         </Grid.Column>
       );
 
