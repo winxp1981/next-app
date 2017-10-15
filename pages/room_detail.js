@@ -81,8 +81,8 @@ class RoomDetail extends React.Component {
     });
 
     var gridDivStyle = {
-      //  border: '1px solid red',
-        width: '80%',
+    //    border: '1px solid red',
+        width: '75%',
         margin: '0 auto',
         marginTop: '100px',
     }

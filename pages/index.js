@@ -116,11 +116,13 @@ class Index extends React.Component {
   async componentDidMount() {
     console.log('Index componentDidMount (client only)');
     console.log("+retrieveRoomInfo client");
+  //  const cookies = new Cookies();
     fetch(BACKEND_URL + '/rooms/', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+  //        'Authorization': 'Token '+ cookies.get('token'),
         },
     }).then(res => {
       // res instanceof Response == true.
@@ -181,24 +183,6 @@ class Index extends React.Component {
 
 
   render () {
-    var searchDivStyle = {
-    //    border: '1px solid green',
-        position: 'absolute',
-        width: '50%',
-        height: '80px',
-    //    top: '70%',
-        bottom: '10px',
-        left: '25%',
-  //      marginLeft: '10%',
-        paddingTop: '20px',
-        paddingLeft: '20px',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        borderRadius: '10px',
-    }
-    var inputStyle = {
-      //  float: 'right',
-        width: '70%',
-    }
     var carouselDivStyle = {
         // https://stackoverflow.com/questions/10487292/position-absolute-but-relative-to-parent
         position: 'relative',
@@ -214,14 +198,44 @@ class Index extends React.Component {
     }
     var gridDivStyle = {
 //        border: '1px solid red',
-        width: '80%',
+        width: '70%',
         margin: '0 auto',
         marginTop: '50px',
     }
-    var dropDownStyle = {
-    //   border: '1px solid yellow',
-       width: '20px',
-    //   height: '5px',
+    var searchDivStyle = {
+    //    border: '1px solid green',
+        position: 'absolute',
+        width: '40%',
+        minWidth: '400px',
+    //    height: '140px',
+    //    top: '70%',
+        bottom: '10px',
+        left: '25%',
+  //      marginLeft: '10%',
+        paddingTop: '20px',
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        paddingBottom: '20px',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        borderRadius: '10px',
+    }
+    var inputStyle = {
+      //  float: 'right',
+        width: '100%',
+    }
+    var locationDivStyle = {
+       display: 'inline-block',
+       border: '1px solid blue',
+       width: '110px',
+       height: '105px',
+     //  marginLeft: '10%',
+       marginTop: '0',
+    }
+    var inputDivStyle = {
+       display: 'inline',
+    //   border: '1px solid blue',
+       width: '100%',
+    //   height: '100%',
      //  marginLeft: '10%',
        marginTop: '0',
     }
@@ -252,7 +266,7 @@ class Index extends React.Component {
             </Card.Description>
           </Card.Content>
           <Card.Content extra>
-            <Button label={<Label>{parseInt(Math.random()*100)}</Label>} color='orange' icon='heart' content='' />
+            <Button label={<Label>{parseInt(Math.random()*100)}</Label>} color='orange' icon='heart' content='' size='mini' />
           </Card.Content>
         </Card>
         <style jsx>{`
@@ -293,11 +307,19 @@ class Index extends React.Component {
               </div>
             </Carousel>
             <div style={searchDivStyle}>
-              <Dropdown style={dropDownStyle} placeholder='不限地區' search selection options={search_location} onChange={this.handleChange}/>
-              <Input style={inputStyle} size='medium' type='text' placeholder='搜尋好房屋' name='search' onChange={this.handleInputChange} action>
-                <input />
-                <Button type='submit' color='orange'><Icon name='search' /> Search</Button>
-              </Input>
+            {
+              /*
+              <div style={locationDivStyle}>
+                <Dropdown placeholder='不限地區' size='large' fluid selection options={search_location} onChange={this.handleChange}/>
+              </div>
+              */
+            }
+              <div style={inputDivStyle}>
+                <Input style={inputStyle} size='large' type='text' placeholder='搜尋好房屋' name='search' onChange={this.handleInputChange} action>
+                  <input />
+                  <Button type='submit' color='orange'><Icon name='search' /> Search</Button>
+                </Input>
+              </div>
             </div>
         </div>
         <div style={gridDivStyle}>

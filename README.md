@@ -20,3 +20,5 @@ rm -rfv ./node_modules/.cache/babel-loader/*
 componentWillMount -> render -> componentDidMount
 ----------------------------- (server only)
 ------------------------------------------------- (server+client))
+
+https://github.com/CassetteRocks/react-infinite-scroller
