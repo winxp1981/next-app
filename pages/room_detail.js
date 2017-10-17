@@ -197,13 +197,13 @@ class RoomDetail extends React.Component {
                     </Table.Row>
                     <Table.Row textAlign='center'>
                       <Table.Cell>季繳</Table.Cell>
-                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_quarter/3} label='/月' size='mini' /></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+(this.props.room_detail.price_quarter/3).toFixed(0)} label='/月' size='mini' /></Table.Cell>
                       <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} size='mini'/></Table.Cell>
                       <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/年' size='mini'/></Table.Cell>
                     </Table.Row>
                     <Table.Row textAlign='center'>
                       <Table.Cell>年繳</Table.Cell>
-                      <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_year/12} label='/月' size='mini' /></Table.Cell>
+                      <Table.Cell><Statistic horizontal color='red' value={'$'+(this.props.room_detail.price_year/12).toFixed(0)} label='/月' size='mini' /></Table.Cell>
                       <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} size='mini'/></Table.Cell>
                       <Table.Cell><Statistic horizontal color='red' value={'$'+this.props.room_detail.price_month} label='/年' size='mini'/></Table.Cell>
                     </Table.Row>

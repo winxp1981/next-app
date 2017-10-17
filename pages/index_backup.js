@@ -116,7 +116,6 @@ class Index extends React.Component {
 
   async componentDidMount() {
     console.log('Index componentDidMount (client only)');
-/*
     console.log("+retrieveRoomInfo client");
   //  const cookies = new Cookies();
     fetch(BACKEND_URL + '/rooms/', {
@@ -159,7 +158,6 @@ class Index extends React.Component {
     });
 
     console.log("-retrieveRoomInfo client");
-*/
   }
 
 
@@ -169,79 +167,13 @@ class Index extends React.Component {
     this.i18n = startI18n(props.translations, props.locale);
 
     this.state = {
-      rooms: [],
-      hasMoreItems: true,
-      nextHref: null,
-
+      room_data: [],
+      offset: 0,
       value: 'Taipei City',
     }
     console.log ('-Index ctor')
   }
 
-  loadRooms(page) {
-    var url = BACKEND_URL + '/rooms/?limit=3'
-    if(this.state.nextHref) {
-        url = this.state.nextHref;
-    }
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-  //        'Authorization': 'Token '+ cookies.get('token'),
-        },
-    }).then(res => {
-      // res instanceof Response == true.
-      if (res.ok) {
-        console.log('loadRooms res OK');
-        res.json().then(data => {
-        console.log(data);
-        var rooms = this.state.rooms;
-        data.results.map((room) => {
-          rooms.push(room);
-        });
-
-        if(data.next) {
-            this.setState({
-                rooms: rooms,
-                nextHref: data.next
-            });
-        } else {
-            this.setState({
-                hasMoreItems: false,
-                // being: test infinite items
-                /*
-                hasMoreItems: true,
-                nextHref: null
-                */
-                // end: test infinite items
-            });
-        }
-        /*
-          var i;
-          for (i = 0; i < data.length; i++) {
-            console.log('data['+i+']:');
-            console.log('data['+i+'].id: '+ data[i].id);
-            console.log('data['+i+'].desc: '+ data[i].description);
-            console.log('data['+i+'].room_photos: '+ data[i].room_photos.length);
-            if (data[i].room_photos.length > 0) {
-              var k;
-              for (k = 0 ; k < data[i].room_photos.length ; k++) {
-                console.log('data['+i+'].room_photos: '+ data[i].room_photos[k].photo);
-              }
-            }
-          }
-        */
-
-        });
-      } else {
-        console.log("Response wasn't perfect, status: ", res.status);
-      }
-    }, function(e) {
-      console.log("Fetch failed!", e);
-    });
-  }
 
   handleInputChange(event) {
     const target = event.target;
@@ -309,7 +241,7 @@ class Index extends React.Component {
        marginTop: '0',
     }
     // render room infos
-    let roomCards = this.state.rooms.map(function(room, index) {
+    let roomCards = this.state.room_data.map(function(room, index) {
 
         return (
         <Grid.Column key={index}>
@@ -392,16 +324,9 @@ class Index extends React.Component {
             </div>
         </div>
         <div style={gridDivStyle}>
-          <InfiniteScroll
-           pageStart={0}
-           loadMore={this.loadRooms.bind(this)}
-           hasMore={this.state.hasMoreItems}
-           loader={<ReactLoading type='spinningBubbles' color='#99BBFF' height={64} width={64} delay={0} />}
-           threshold={-50} >
-             <Grid centered={false} columns={3} relaxed={true} stackable={true}>
-               { roomCards }
-             </Grid>
-          </InfiniteScroll>
+          <Grid centered={false} columns={3} relaxed={true} stackable={true}>
+          {roomCards}
+          </Grid>
         </div>
       </div>
     </Layout>

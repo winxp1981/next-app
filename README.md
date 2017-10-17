@@ -22,3 +22,4 @@ componentWillMount -> render -> componentDidMount
 ------------------------------------------------- (server+client))
 
 https://github.com/CassetteRocks/react-infinite-scroller
+# next-app

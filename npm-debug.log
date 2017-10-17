@@ -24,7 +24,7 @@
 14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:222:5)
 15 verbose pkgid nextjs@1.0.0
 16 verbose cwd /home/morris/project/nextjs
-17 error Linux 4.10.0-35-generic
+17 error Linux 4.10.0-37-generic
 18 error argv "/usr/bin/nodejs" "/usr/bin/npm" "run" "dev"
 19 error node v4.7.2
 20 error npm  v3.5.2
