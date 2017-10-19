@@ -391,6 +391,10 @@ class LoginDialog extends React.Component {
     loading: false,
   };
 
+  actions = [
+    { label: "關閉", onClick: this.props.onEscKeyDown },
+  ];
+
   constructor(props) {
     super(props);
 //    this.handleChange = this.handleChange.bind(this);
@@ -565,7 +569,7 @@ class LoginDialog extends React.Component {
     </Head>
     <ThemeProvider theme={theme}>
     <Dialog
-      actions={this.props.actions}
+      actions={this.actions}
       active={this.props.active}
       onEscKeyDown={this.props.onEscKeyDown}
       onOverlayClick={this.props.onOverlayClick}

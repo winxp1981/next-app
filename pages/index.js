@@ -16,7 +16,7 @@ import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader } from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import ExternalLink from '../components/externalLink'  // for target='_blank'
 import LazyLoad from 'react-lazyload';
@@ -255,7 +255,7 @@ class Index extends React.Component {
     var carouselDivStyle = {
         // https://stackoverflow.com/questions/10487292/position-absolute-but-relative-to-parent
         position: 'relative',
-    //    border: '1px solid red',
+      //  border: '1px solid red',
     }
     var cardStyle = {
 //        border: '1px solid blue',
@@ -308,12 +308,27 @@ class Index extends React.Component {
      //  marginLeft: '10%',
        marginTop: '0',
     }
+    var roomPhotoMainDivStyle ={
+      position: 'relative',
+    //  border: '1px solid blue',
+    }
+    var roomPhotoMainTitleDivStyle ={
+      position: 'absolute',
+      width: '100%',
+      bottom: '0px',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      color: 'rgba(255, 255, 255, 0.9)',
+      paddingTop: '3px',
+      paddingLeft: '3px',
+      paddingBottom: '3px',
+    }
     // render room infos
     let roomCards = this.state.rooms.map(function(room, index) {
 
         return (
         <Grid.Column key={index}>
         <Card style={cardStyle}>
+        <div style={roomPhotoMainDivStyle}>
         {
           (room.room_photos.length > 0) ?
             <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
@@ -323,9 +338,12 @@ class Index extends React.Component {
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
         }
+           <div style={roomPhotoMainTitleDivStyle}>
+             <h2>{room.title}</h2>
+           </div>
+          </div>
           <Card.Content>
             <Card.Header>
-              {room.title}
             </Card.Header>
             <Card.Description>
               <span>
@@ -358,9 +376,14 @@ class Index extends React.Component {
     <Layout title = "Welcome to Roomoca">
         <Head>
           <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
-        </Head>
+       </Head>
         <div>
           <div style={carouselDivStyle}>
+          <div>
+            <img src="../static/img/ChAFD1muV8uAIP0DAAbtGK7EYFw715.jpg" width='100%'/>
+          </div>
+          {
+            /*
             <Carousel showStatus={false} showIndicators={false} showThumbs={false} infiniteLoop={true} autoPlay={true}>
               <div>
                 <img src="../static/img/ChAFD1muV8uAIP0DAAbtGK7EYFw715.jpg" />
@@ -375,6 +398,8 @@ class Index extends React.Component {
                 <img src="../static/img/ChAFD1m5DSOAOcrUAANztihPK14300.jpg" />
               </div>
             </Carousel>
+            */
+          }
             <div style={searchDivStyle}>
             {
               /*
