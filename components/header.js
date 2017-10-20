@@ -60,6 +60,11 @@ class Header extends React.Component {
          </a></Link></li>
          }
          {
+         <li className="top_menu"><Link route='/'><a className="top_item">
+         {this.t('download_app')}
+         </a></Link></li>
+         }
+         {
            this.props.username ? (
                    <li className="dropdown top_menu">
                        <a className="dropdown-toggle top_item" data-toggle="dropdown" href="#">

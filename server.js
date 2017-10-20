@@ -1,8 +1,10 @@
 const next = require('next')
 const routes = require('./routes')
 const app = next({dev: process.env.NODE_ENV !== 'production'})
-//const handler = routes.getRequestHandler(app)
+const handler = routes.getRequestHandler(app)
+var cors = require('cors')
 
+/*
 var args = {req:null, res:null, route:null, query:null};
 const handler = routes.getRequestHandler(app, (args) => {
   // console.log('custom handler')
@@ -10,9 +12,10 @@ const handler = routes.getRequestHandler(app, (args) => {
   args.res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   app.render(args.req, args.res, args.route.page, args.query)
 })
+*/
 
 // With express
 const express = require('express')
 app.prepare().then(() => {
-  express().use(handler).listen(3000)
+  express().use(cors()).use(handler).listen(3000)
 })

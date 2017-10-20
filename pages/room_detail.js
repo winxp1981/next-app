@@ -1,5 +1,6 @@
 import React from 'react';
 import Layout from '../components/layout'
+import jsCookie from 'js-cookie';
 import Cookies from 'universal-cookie'
 import { bindActionCreators } from 'redux'
 import { initStore, addCount, setUsername, setLocale} from '../store'
@@ -9,7 +10,7 @@ import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment, Button, Table } from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment, Button, Table, Popup } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import RoomMap from '../components/roomMap'
 
@@ -33,6 +34,12 @@ class RoomDetail extends React.Component {
       console.log("@@ cookies email = " + cookies.get('email'));
       console.log("@@ cookies token = " + cookies.get('token'));
       initProps.username = cookies.get('username');
+      initProps.token = cookies.get('token')
+      if (initProps.token === undefined) {
+        initProps.loggedIn = false;
+      } else {
+        initProps.loggedIn = true;
+      }
 
       store.dispatch(setUsername(initProps.username));
       store.dispatch(setLocale(initProps.locale));
@@ -45,6 +52,7 @@ class RoomDetail extends React.Component {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': (initProps.loggedIn ? 'Token '+ initProps.token : ''),
         },
     });
 
@@ -66,8 +74,28 @@ class RoomDetail extends React.Component {
   constructor(props) {
     super(props);
     this.i18n = startI18n(props.translations, props.locale)
+    console.log('CTOR')
+    this.state = {
+      openPleaseLoginInPopup: false,
+      isUserLike: this.props.room_detail.is_user_like,
+    }
   }
 
+  handleOpen = () => {
+    if (this.props.loggedIn) {
+      console.log('已登入....')
+      this.setState({ isUserLike: !this.state.isUserLike })
+    }
+    else {
+      console.log('請先登入');
+      this.setState({ openPleaseLoginInPopup: true })
+    }
+  }
+
+  handleClose = () => {
+    console.log('on close')
+    this.setState({ openPleaseLoginInPopup: false })
+  }
 
   render () {
     let roomPhotos = this.props.room_detail.room_photos.map(function(room_photos, index) {
@@ -111,6 +139,8 @@ class RoomDetail extends React.Component {
     //  position: 'absolute',
     //  bottom: '50px',
     }
+    let likeButton = this.state.isUserLike ?
+        <Button circular icon='heart' size='large' color='pink' /> : <Button circular icon='empty heart' size='large' />
     return (
       <I18nextProvider i18n={this.i18n}>
       <Layout title = "Welcome to Roomoca">
@@ -122,8 +152,26 @@ class RoomDetail extends React.Component {
           <div style={gridDivStyle}>
             <Grid centered={false} relaxed={true} stackable={true}>
               <Grid.Row style={testBorder}>
-                <Grid.Column style={testBorder}>
+                <Grid.Column width={10} style={testBorder}>
                   <Header as='h1'>{ this.props.room_detail.title }</Header>
+                </Grid.Column>
+                <Grid.Column width={6} style={testBorder}>
+                {
+                //  <Button circular icon='empty heart' size='large' color='pink'/>
+                }
+                  <Popup
+                    trigger={likeButton}
+                    content={`請先登入`}
+                    on='click'
+                    open={this.state.openPleaseLoginInPopup}
+                    onClose={this.handleClose}
+                    onOpen={this.handleOpen}
+                    position='top right'
+                    inverted
+                  />
+                  <Button circular icon='facebook f' size='large' color='blue'/>
+                  <Button circular icon='wechat' size='large' color='green'/>
+                  <Button circular icon='twitter' size='large' color='teal'/>
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row style={testBorder}>
@@ -213,9 +261,6 @@ class RoomDetail extends React.Component {
                 <div style={btnDivStyle}>
                   <Button color='brown' size='huge'>我要看房</Button>
                   <Button color='green' size='huge'>我要租</Button>
-                </div>
-                <div style={btnDivStyle}>
-                  <Button color='blue' icon={<Icon name='share alternate' />} content='分享' size='huge'/>
                 </div>
                 </Grid.Column>
               </Grid.Row>

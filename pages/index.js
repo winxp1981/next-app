@@ -16,7 +16,7 @@ import startI18n from '../tools/startI18n'
 import { getTranslation } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header } from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header, Feed } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import ExternalLink from '../components/externalLink'  // for target='_blank'
 import LazyLoad from 'react-lazyload';
@@ -353,7 +353,19 @@ class Index extends React.Component {
             </Card.Description>
           </Card.Content>
           <Card.Content extra>
-            <Button label={<Label>{parseInt(Math.random()*100)}</Label>} color='orange' icon='heart' content='' size='mini' />
+          {
+            //<Button label={<Label>{room.like_count}</Label>} color='orange' icon='heart' content='' size='mini' />
+            /*
+            <Feed size='large'>
+              <Feed.Event>
+                  <Feed.Meta>
+                    <Feed.Like><Icon name='like' />{room.like_count}</Feed.Like>
+                  </Feed.Meta>
+              </Feed.Event>
+            </Feed>
+            */
+            <Header as='h5' color='red'><Icon name='like'/>{room.like_count}</Header>
+          }
           </Card.Content>
         </Card>
         <style jsx>{`
