@@ -45,6 +45,7 @@ class RoomDetail extends React.Component {
       store.dispatch(setLocale(initProps.locale));
     }
 
+    initProps.room_id = query.id;
     // fetch room detail
     console.log('RoomDetail (id: ' + query.id +')');
     var response = await fetch(BACKEND_URL + '/rooms/' + query.id, {
@@ -71,6 +72,33 @@ class RoomDetail extends React.Component {
     return initProps;
   }
 
+  // handle favorite (like/dislike) for current user
+  async likeThisRoom(isLike) {
+      console.log("+likeThisRoom (" + isLike + ")");
+      var response = await fetch(BACKEND_URL + '/rooms/' + this.props.room_id + (isLike ? '/like/' : '/dislike/'), {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': (this.props.loggedIn ? 'Token '+ this.props.token : ''),
+          },
+      });
+
+      var result = false;
+      console.log(response.status);
+      //console.log(data);
+      if (response.status === 200) {
+        console.log('OK');
+        result = true;
+      }
+      else {
+        result = false;
+      }
+
+      console.log("-likeThisRoom");
+      return result;
+  }
+
   constructor(props) {
     super(props);
     this.i18n = startI18n(props.translations, props.locale)
@@ -81,9 +109,13 @@ class RoomDetail extends React.Component {
     }
   }
 
-  handleOpen = () => {
+  handleOpen = async() => {
     if (this.props.loggedIn) {
       console.log('已登入....')
+      this.state.isUserLike ?
+          await this.likeThisRoom(false) :
+          await this.likeThisRoom(true)
+
       this.setState({ isUserLike: !this.state.isUserLike })
     }
     else {

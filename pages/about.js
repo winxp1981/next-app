@@ -38,6 +38,11 @@ class About extends React.Component {
   }
 
   render () {
+    const panes = [
+      { menuItem: '關於 Roomoca', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+      { menuItem: 'Test 2', render: () => <Tab.Pane>Tab 2 Content</Tab.Pane> },
+      { menuItem: 'Test 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
+    ]
     var aboutDivStyle = {
       //  border: '1px solid red',
         width: '70%',
@@ -53,7 +58,7 @@ class About extends React.Component {
         // <div className='jumbotron'><h1>About param: {this.props.url.query.id}</h1></div>
         }
         <div style={aboutDivStyle}>
-         <Tab menu={{ color: 'brown', inverted: false, secondary: true, pointing: true }} panes={panes} />
+          <Tab panes={panes} defaultActiveIndex={0} />
         </div>
       </Layout>
       </I18nextProvider>
