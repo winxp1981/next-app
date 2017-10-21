@@ -14,6 +14,7 @@ import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List
 import { Carousel } from 'react-responsive-carousel'
 import RoomMap from '../components/roomMap'
 
+const popup_timeout = 1000
 
 class RoomDetail extends React.Component {
 
@@ -104,7 +105,8 @@ class RoomDetail extends React.Component {
     this.i18n = startI18n(props.translations, props.locale)
     console.log('CTOR')
     this.state = {
-      openPleaseLoginInPopup: false,
+      openPopup: false,
+      popUpMsg: '請先登入',
       isUserLike: this.props.room_detail.is_user_like,
     }
   }
@@ -112,21 +114,37 @@ class RoomDetail extends React.Component {
   handleOpen = async() => {
     if (this.props.loggedIn) {
       console.log('已登入....')
-      this.state.isUserLike ?
-          await this.likeThisRoom(false) :
-          await this.likeThisRoom(true)
+
+      await this.likeThisRoom(!this.state.isUserLike)
 
       this.setState({ isUserLike: !this.state.isUserLike })
+
+      if (this.state.isUserLike) {
+        this.setState({ openPopup: true, popUpMsg: '已加入收藏'})
+      }
+      else {
+        this.setState({ openPopup: true, popUpMsg: '已取消收藏'})
+      }
+
+      this.timeout = setTimeout(() => {
+        this.setState({ openPopup: false })
+      }, popup_timeout)
     }
     else {
       console.log('請先登入');
-      this.setState({ openPleaseLoginInPopup: true })
+      this.setState({ openPopup: true, popUpMsg: '請先登入'})
+
+      this.timeout = setTimeout(() => {
+        this.setState({ openPopup: false })
+      }, popup_timeout)
     }
   }
 
   handleClose = () => {
     console.log('on close')
-    this.setState({ openPleaseLoginInPopup: false })
+    this.setState({ openPopup: false })
+
+    clearTimeout(this.timeout)
   }
 
   render () {
@@ -193,9 +211,9 @@ class RoomDetail extends React.Component {
                 }
                   <Popup
                     trigger={likeButton}
-                    content={`請先登入`}
+                    content={this.state.popUpMsg}
                     on='click'
-                    open={this.state.openPleaseLoginInPopup}
+                    open={this.state.openPopup}
                     onClose={this.handleClose}
                     onOpen={this.handleOpen}
                     position='top right'
