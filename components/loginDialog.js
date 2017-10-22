@@ -392,7 +392,7 @@ class LoginDialog extends React.Component {
   };
 
   actions = [
-    { label: "關閉", onClick: null },
+    { label: "關閉", onClick: this.props.onEscKeyDown },
   ];
 
   constructor(props) {

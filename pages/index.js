@@ -322,6 +322,10 @@ class Index extends React.Component {
       paddingLeft: '3px',
       paddingBottom: '3px',
     }
+    var likeCountDivStyle = {
+      color: '#FF60AF',
+    //  border: '1px solid blue',
+    }
     // render room infos
     let roomCards = this.state.rooms.map(function(room, index) {
 
@@ -354,17 +358,8 @@ class Index extends React.Component {
           </Card.Content>
           <Card.Content extra>
           {
-            //<Button label={<Label>{room.like_count}</Label>} color='orange' icon='heart' content='' size='mini' />
-            /*
-            <Feed size='large'>
-              <Feed.Event>
-                  <Feed.Meta>
-                    <Feed.Like><Icon name='like' />{room.like_count}</Feed.Like>
-                  </Feed.Meta>
-              </Feed.Event>
-            </Feed>
-            */
-            <Header as='h5' color='red'><Icon name='like'/>{room.like_count}</Header>
+          //  <Header as='h5' color='red'><Icon name='heart' />{room.like_count}</Header>
+              <div style={likeCountDivStyle}><Icon name='heart' />{room.like_count}</div>
           }
           </Card.Content>
         </Card>
