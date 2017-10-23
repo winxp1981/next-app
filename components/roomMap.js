@@ -81,6 +81,7 @@ class RoomMap extends React.Component {
               {
                 position: { lat:pos.lat, lng:pos.lng},
                 defaultAnimation: 2,
+                icon: '../static/icon/house-icon.png',
                 key: Date.now(),// Add a key property for: http://fb.me/react-warning-keys
               },
             );

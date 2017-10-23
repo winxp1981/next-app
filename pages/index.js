@@ -22,6 +22,7 @@ import ExternalLink from '../components/externalLink'  // for target='_blank'
 import LazyLoad from 'react-lazyload';
 import ReactLoading from 'react-loading';
 import InfiniteScroll from 'react-infinite-scroller';
+import LazyHero from 'react-lazy-hero';
 
 const search_location = [
   { key: 1, text: '不限地區', value: 1 },
@@ -326,6 +327,15 @@ class Index extends React.Component {
       color: '#FF60AF',
     //  border: '1px solid blue',
     }
+    var loadingDivStyle = {
+      width: '80px',
+      margin: '0 auto',
+    //  border: '1px solid blue',
+    }
+    var heroTextStyle = {
+      color: '#FFFFFF',
+      fontSize: '300%',
+    }
     // render room infos
     let roomCards = this.state.rooms.map(function(room, index) {
 
@@ -382,13 +392,25 @@ class Index extends React.Component {
     <I18nextProvider i18n={this.i18n}>
     <Layout title = "Welcome to Roomoca">
         <Head>
-          <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
+        {
+        //  <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
+        }
        </Head>
         <div>
           <div style={carouselDivStyle}>
+            <LazyHero imageSrc="../static/img/home_1.jpg"
+              color='#000'
+              opacity={0.1}
+              isCentered={true}
+              parallaxOffset={0}>
+              <h1 style={heroTextStyle}>租屋, 也能是一種享受!</h1>
+            </LazyHero>
+          {
+          /*
           <div>
             <img src="../static/img/ChAFD1muV8uAIP0DAAbtGK7EYFw715.jpg" width='100%'/>
           </div>
+          */}
           {
             /*
             <Carousel showStatus={false} showIndicators={false} showThumbs={false} infiniteLoop={true} autoPlay={true}>
@@ -428,7 +450,7 @@ class Index extends React.Component {
            pageStart={0}
            loadMore={this.loadRooms.bind(this)}
            hasMore={this.state.hasMoreItems}
-           loader={<ReactLoading type='spinningBubbles' color='#99BBFF' height={64} width={64} delay={0} />}
+           loader={<div style={loadingDivStyle}><ReactLoading type='spinningBubbles' color='#003C9D' height={64} width={64} delay={0} /></div>}
            threshold={-50} >
              <Grid centered={false} columns={3} relaxed={true} stackable={true}>
                { roomCards }

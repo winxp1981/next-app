@@ -430,7 +430,7 @@ class AddRoom extends React.Component {
           <span style={checkboxSpanStyle}><Checkbox label='沙發' name="sofa" value={this.state.sofa} onClick={this.handleCbClick}/></span>
           <span style={checkboxSpanStyle}><Checkbox label='椅子' name="chair" value={this.state.chair} onClick={this.handleCbClick}/></span>
       </div>
-        <h3>上傳照片 (拖曳到下方)</h3>
+        <h3>上傳照片</h3>
         <div style={dropzoneDivStyle}>
           <Dropzone onDrop={this.onDrop.bind(this)} style={dropzoneStyle}>
             <p>Drag photos here</p>
