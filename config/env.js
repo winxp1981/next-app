@@ -7,8 +7,8 @@ module.exports = {
   BACKEND_URL: 'http://ec2-52-221-18-155.ap-southeast-1.compute.amazonaws.com:8080',
   */
 /*
-  FRONTEND_URL: 'http://roomoca.com',
-  BACKEND_URL: 'http://roomoca.com:8080',
+  FRONTEND_URL: 'http://www.roomoca.com',
+  BACKEND_URL: 'http://www.roomoca.com:8080',
 */
 }
 

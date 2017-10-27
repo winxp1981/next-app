@@ -258,129 +258,65 @@ async function regularLogin(_email, _pswd) {
   console.log("-Login (regular) submit");
   return result;
 }
-/*
-function regularLogin(_email, _pswd) {
-    console.log("+Login (regular) submit (" + _email + ", " + _pswd +")");
-    var token_acquired = false;
-    fetch(BACKEND_URL + '/rest-auth/login/', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email:_email, password:_pswd})
-    })
-    .then(function checkStatus(response) {
-        if (response.status === 200) {
-            token_acquired = true;
-        } else {
-            token_acquired = false;
-        }
-        return response.json();
-       })
-     .then(function(data) {
-       	//完成
-       	  if (token_acquired) {
-       	      console.log('login success, key: '+ data.key);
-       	      getUserProfile(data.key);
-       	  }
-       	  else {
-       	      console.log(JSON.stringify(data));
-       	  }
-       }).catch(function(error) {
-           console.log('request failed: ', error);
-       }).then(function(errorData){
-          //失敗
-          console.log(JSON.stringify(errorData));
-       });
 
-       console.log("-Login (regular) submit");
-};
-*/
 
-function facebookLogin(_access_token) {
-    console.log("+Login (facebook) submit (" + _access_token + ")");
+async function facebookLogin(_access_token) {
+  console.log("+Login (facebook) submit (" + _access_token + ")");
+  var response = await fetch(BACKEND_URL + '/rest-auth/facebook/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ access_token:_access_token})
+  });
 
-    // clear the current user in session storage
-    clearUserCookie();
+  var result = false;
+  var data = await response.json();
+  console.log(response.status);
+  //console.log(data);
+  if (response.status === 200)
+  {
+    console.log(data.key);
+    result = await getUserProfile(data.key);
+  }
+  else {
+    result = false;
+  }
 
-    var token_acquired = false;
-    fetch(BACKEND_URL + '/rest-auth/facebook/', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ access_token:_access_token})
-    })
-    .then(function checkStatus(response) {
-        if (response.status === 200) {
-            token_acquired = true;
-        } else {
-            token_acquired = false;
-        }
-        return response.json();
-       })
-     .then(function(data) {
-       	//完成
-       	  if (token_acquired) {
-       	      console.log('login success, key: '+ data.key);
-       	      getUserProfile(data.key);
-       	  }
-       	  else {
-       	      console.log(JSON.stringify(data));
-       	  }
-       }).catch(function(error) {
-           console.log('request failed: ', error);
-       }).then(function(errorData){
-          //失敗
-          console.log(JSON.stringify(errorData));
-       });
+  console.log("-Login (facebook) submit");
+  return result;
+}
 
-       console.log("-Login (facebook)");
-};
 
-function googleLogin(_access_token) {
-    console.log("+Login (Google) submit (" + _access_token + ")");
+async function googleLogin(_access_token) {
+  console.log("+Login (Google) submit (" + _access_token + ")");
+  var response = await fetch(BACKEND_URL + '/rest-auth/google/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ access_token:_access_token})
+  });
 
-    // clear the current user in session storage
-    clearUserCookie();
+  var result = false;
+  var data = await response.json();
+  console.log(response.status);
+  //console.log(data);
+  if (response.status === 200)
+  {
+    console.log(data.key);
+    result = await getUserProfile(data.key);
+  }
+  else {
+    result = false;
+  }
 
-    var token_acquired = false;
-    fetch(BACKEND_URL + '/rest-auth/google/', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ access_token:_access_token})
-    })
-    .then(function checkStatus(response) {
-        if (response.status === 200) {
-            token_acquired = true;
-        } else {
-            token_acquired = false;
-        }
-        return response.json();
-       })
-     .then(function(data) {
-       	//完成
-       	  if (token_acquired) {
-       	      console.log('login success, key: '+ data.key);
-       	      getUserProfile(data.key);
-       	  }
-       	  else {
-       	      console.log(JSON.stringify(data));
-       	  }
-       }).catch(function(error) {
-           console.log('request failed: ', error);
-       }).then(function(errorData){
-          //失敗
-          console.log(JSON.stringify(errorData));
-       });
+  console.log("-Login (Google) submit");
+  return result;
+}
 
-       console.log("-Login (Google)");
-};
 
 class LoginDialog extends React.Component {
 
@@ -389,6 +325,8 @@ class LoginDialog extends React.Component {
     password: '',
     fixedIndex: 0,
     loading: false,
+    fbLoading: false,
+    googleLoading: false,
   };
 
   actions = [
@@ -400,6 +338,8 @@ class LoginDialog extends React.Component {
 //    this.handleChange = this.handleChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
+    this.handleFBLogin = this.handleFBLogin.bind(this);
+    this.onGoogleSignInSuccess = this.onGoogleSignInSuccess.bind(this);
     this.t = props.t;
     console.log('LoginDialog');
   }
@@ -433,8 +373,9 @@ class LoginDialog extends React.Component {
      console.log(response);
   }
 
-  onGoogleSignInSuccess(googleUser) {
+  async onGoogleSignInSuccess(googleUser) {
       console.log('+onGoogleSignInSuccess');
+      this.setState({ googleLoading: true });
       var profile = googleUser.getBasicProfile();
       console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
       console.log('Name: ' + profile.getName());
@@ -447,7 +388,9 @@ class LoginDialog extends React.Component {
       var access_token = googleUser.getAuthResponse().access_token;
       console.log('access token: ' + access_token);
 
-      googleLogin(access_token);
+      await googleLogin(access_token);
+      this.setState({ googleLoading: false });
+      this.props.onEscKeyDown();
   }
 
 /*
@@ -476,6 +419,7 @@ class LoginDialog extends React.Component {
     this.setState({ loading: true });
     await regularLogin(this.state.email, this.state.password);
     this.setState({ loading: false });
+    this.props.onEscKeyDown();
   }
 
   async handleSignupSubmit(event) {
@@ -492,22 +436,27 @@ class LoginDialog extends React.Component {
 
   handleFBLogin() {
       console.log('+handleFBLogin');
+      let self = this
       window.FB.login(function(response) {
           if (response.authResponse) {
               console.log("Welcome, retrieving your information...");
-              window.FB.api('/me', function(response) {
+              self.setState({ fbLoading: true });
+              window.FB.api('/me', async function(response) {
                   console.log("Good to see you, " + response.name + ".");
                   console.log(response);
 
                   var access_token = window.FB.getAuthResponse();
                   console.log(access_token.accessToken);
-                  facebookLogin(access_token.accessToken);
+                  await facebookLogin(access_token.accessToken);
+                  self.setState({ fbLoading: false });
+                  self.props.onEscKeyDown();
               });
           }
           else {
               console.log("User cancelled login...");
           }
       });
+
   }
 
 
@@ -588,8 +537,8 @@ class LoginDialog extends React.Component {
       <hr style={{width:'100%', border: 'solid 1px #DDDDDD'}} />
       <div style={socialLoginDivStyle}>
         <h4>Log in with social network</h4>
-        <Button raised primary style={fbLoginBtnStyle} onClick={this.handleFBLogin}>
-        {' '}{this.t('login_facebook')}
+        <Button raised primary style={fbLoginBtnStyle} onClick={this.handleFBLogin} disabled={this.state.fbLoading}>
+        { this.state.fbLoading ? <ReactLoading style={loadingIconStyle} type="spokes" delay={100} /> : this.t('login_facebook')}
           {
             // <i className="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
           }
@@ -597,10 +546,7 @@ class LoginDialog extends React.Component {
         <GoogleLogin style={googleLoginBtnStyle} clientId="161162238880-00kh7ilj9lucg6o267iq2mdo7kcvelk7.apps.googleusercontent.com"
           onSuccess={this.onGoogleSignInSuccess}
           onFailure={this.onGoogleSignInFailure}>
-          {
-           // <i className="fa fa-google-plus" aria-hidden="true"></i>
-          }
-          {this.t('login_google')}
+          { this.state.googleLoading ? <ReactLoading style={loadingIconStyle} type="spokes" delay={100} /> : this.t('login_google')}
         </GoogleLogin>
       </div>
       </Tab>
