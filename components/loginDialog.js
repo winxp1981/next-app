@@ -34,46 +34,34 @@ export function cookieClearUserProfile() {
   console.log('@@ cookieClearUserProfile ');
 }
 
-export function logoutUser() {
-    console.log("+logoutUser");
+export async function logoutUser() {
+  console.log("+logoutUser");
+  cookieClearUserProfile();
+  // retrieve extended user profile
 
-    cookieClearUserProfile();
+  var response = await fetch(BACKEND_URL + '/rest-auth/logout/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+  });
 
-    var success = false;
-    fetch(BACKEND_URL + '/rest-auth/logout/', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-    })
-    .then(function checkStatus(response) {
-        if (response.status === 200) {
-            success = true;
-        } else {
-            success = false;
-        }
-        return response.json();
-       })
-     .then(function(data) {
-       	//完成
-       	  if (success) {
-       	      console.log('logout success');
-              Router.push('/');
-       	      console.log(JSON.stringify(data));
-       	  }
-       	  else {
-       	      console.log(JSON.stringify(data));
-       	  }
-       }).catch(function(error) {
-           console.log('request failed: ', error);
-       }).then(function(errorData){
-          //失敗
-          console.log(JSON.stringify(errorData));
-       });
-
-       console.log("-logoutUser submit");
+  var result = false;
+  var data = await response.json();
+  console.log(response.status);
+  console.log(data);
+  if (response.status === 200) {
+    // redirect to home
+    Router.push('/');
+    result = true;
+  }
+  else {
+    result = false;
+  }
+  console.log("-logoutUser submit");
 }
+
 
 async function getUserProfile(key) {
     console.log("+getUserProfile (" + key + ")");

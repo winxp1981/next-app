@@ -5,7 +5,7 @@ import thunkMiddleware from 'redux-thunk'
 const storeInitialState = {
   username: '',
   avatar: '',
-  locale: '',
+  locale: 'tw',
   count: 100
 }
 

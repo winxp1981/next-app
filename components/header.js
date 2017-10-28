@@ -1,23 +1,31 @@
 import React from 'react';
 //import Link from 'next/link'
-import { Link } from "../routes";
+import { Link, Router } from "../routes";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { initStore, addCount, setUsername, setAvatar } from '../store'
+import { initStore, addCount, setUsername, setAvatar, setLocale } from '../store'
 import { translate } from 'react-i18next'
 import Head from 'next/head'
 import LoginDialog from './loginDialog'
-import { Image } from 'semantic-ui-react'
+import { Icon, Image, Dropdown } from 'semantic-ui-react'
+import _ from 'lodash'
 //import ReactDOM from 'react-dom';
 
 import {
     logoutUser
 } from './loginDialog'
 
+const langOptions = [
+  { key: 'TradChinese', text: '正體中文', value:1 },
+//  { key: 'English', text: 'English', value:2 },
+]
+
+const profileOptions = [
+  { key: 'account', text: '我的帳戶', value:1, icon: 'user' },
+  { key: 'sign-out', text: '登出', value:2, icon: 'sign out' },
+]
+
 class Header extends React.Component {
-  state = {
-    login_dialog_active: false
-  };
 
   handleToggleLogin = () => {
     this.setState({login_dialog_active: !this.state.login_dialog_active});
@@ -31,15 +39,70 @@ class Header extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.t = props.t
+
+    this.state = {
+      langDisplay: '正體中文',
+      login_dialog_active: false,
+    }
   }
 
-  handleLogout(event) {
+
+  // handleLogout(event) {
+  handleLogout() {
       console.log ("logout");
       logoutUser();
   }
 
+  handleLangOptionChange = (ev, data) => {
+    // See https://lodash.com/docs/#find
+    const option = _.find(langOptions, { value: data.value })
+    console.log(option.key)
+    if (option.key === 'TradChinese') {
+      console.log('hello Chinese')
+      this.setState({ langDisplay: '正體中文'})
+    }
+    else if (option.key === 'English') {
+      console.log('hello English')
+      this.setState({ langDisplay: 'English'})
+      console.log (window.location.href)
+      console.log (document.location.pathname)
+    //  Router.pushRoute(document.location.pathname)
+    //  this.props.setLocale('en');
+    }
+    else {
+    }
+  }
+
+  handleProfileOptionChange = (ev, data) => {
+    // See https://lodash.com/docs/#find
+    const option = _.find(profileOptions, { value: data.value })
+    console.log(option.key)
+    if (option.key === 'sign-out')
+      this.handleLogout();
+  }
+
   render () {
-    // var loginMsg = <FormattedMessage id='login' description='' defaultMessage='Login'/>
+
+    const langTrigger = (
+      <span>
+        <Icon name='world' size='large'/> {this.state.langDisplay}
+      </span>
+    )
+
+    const profileMenuTrigger = (
+      <span>
+        <Image avatar src={this.props.avatar} size='mini'/>
+      </span>
+    )
+
+    var localeDivStyle = {
+       display: 'inline-block',
+    //   border: '1px solid blue',
+       width: '110px',
+       float: 'right',
+       marginTop: '33px',
+       marginRight: '0px',
+    }
 
     return (
     <div className='header'>
@@ -63,25 +126,14 @@ class Header extends React.Component {
          }
          {
            this.props.username ? (
-                   <li className="dropdown top_menu">
-                       <a className="dropdown-toggle top_item" data-toggle="dropdown" href="#">
-                       {
-                      //     <span className="glyphicon glyphicon-user"></span>
-                    //       { ' ' + this.props.username }
-                       }
-                         <Image src={this.props.avatar} avatar size='mini'/>
-                       </a>
-                       <ul className="dropdown-menu">
-                         <li><a href="#">Profile</a></li>
-                         <li><a href="#" onClick={this.handleLogout}>Logout</a></li>
-                       </ul>
-                   </li>
+            <Dropdown trigger={profileMenuTrigger} options={profileOptions} pointing='top right' onChange={this.handleProfileOptionChange} icon={null} />
            )
            : (
              <li className="top_menu"><a className="top_item" href='#' onClick={this.handleToggleLogin}> {this.t('login')} </a></li>
            )
          }
-        </ul>
+         </ul>
+        <div style={localeDivStyle}><Dropdown trigger={langTrigger} options={langOptions} onChange={this.handleLangOptionChange}/></div>
         <LoginDialog
           actions={this.actions}
           active={this.state.login_dialog_active}
@@ -90,7 +142,7 @@ class Header extends React.Component {
         />
         <style jsx>{`
           div.header {
-          /*    border: 1px solid red;  */
+          //    border: 1px solid red;
               margin-right: 30px;
           }
           ul.header {
@@ -98,8 +150,8 @@ class Header extends React.Component {
           /*
             background-color: #FFF;
             padding: 0;
-            border: 1px solid green;
           */
+          //  border: 1px solid green;
             float: right;
           }
           ul.header li.top_menu {
@@ -167,7 +219,8 @@ const mapStateToProps = (state) => {
   return {
     username: state.username,
     avatar: state.avatar,
-    count: state.count
+    count: state.count,
+    locale: state.locale,
   }
 }
 
@@ -176,6 +229,7 @@ const mapDispatchToProps = (dispatch) => {
     addCount: bindActionCreators(addCount, dispatch),
     setUsername: bindActionCreators(setUsername, dispatch),
     setAvatar: bindActionCreators(setAvatar, dispatch),
+    setLocale: bindActionCreators(setLocale, dispatch),
   }
 }
 

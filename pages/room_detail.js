@@ -399,8 +399,10 @@ class RoomDetail extends React.Component {
               </Grid.Row>
               <Grid.Row style={testBorder}>
                 <Grid.Column style={testBorder}>
+                 <Segment compact>
                   <Header as='h2' disabled >{ this.props.room_detail.location }</Header>
                   <RoomMap width='720px' height='350px' address={ this.props.room_detail.location } />
+                 </Segment>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
