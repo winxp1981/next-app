@@ -69,6 +69,7 @@ class About extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
+    avatar: state.avatar,
     count: state.count,
   }
 }

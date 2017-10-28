@@ -198,7 +198,7 @@ class AddRoom extends React.Component {
   handleUpload = async () => {
     console.log('+handleUpload');
     // print state for debugging
-    var userpk = jsCookie.get('userpk');
+    var userpk = jsCookie.get('userid');
     console.log('pk: '+ userpk);
     if(userpk === undefined) {
       console.log('請先登入');

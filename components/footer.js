@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from "../routes";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { initStore, addCount, setUsername } from '../store'
+import { initStore, addCount, setUsername, setAvatar } from '../store'
 import { translate } from 'react-i18next'
 import Head from 'next/head'
 import { Segment, Divider, List } from 'semantic-ui-react'

@@ -8,6 +8,7 @@ import {
   initStore,
   addCount,
   setUsername,
+  setAvatar,
   setLocale
 } from '../store'
 import withRedux from 'next-redux-wrapper'
@@ -45,18 +46,20 @@ class Index extends React.Component {
     if (req && req.headers) {
       console.log("@@ getInitialProps @ server");
       const cookies = new Cookies(req.headers.cookie);
-      console.log("@@ Header username = " + cookies.get('username'));
-      console.log("@@ Header email = " + cookies.get('email'));
+      console.log("@@ Header username = " + cookies.get('nickname'));
+      console.log("@@ Header avatar = " + cookies.get('avatar'));
       console.log("@@ Header token = " + cookies.get('token'));
-      initProps.username = cookies.get('username');
+      initProps.username = cookies.get('nickname');
+      initProps.avatar = cookies.get('avatar');
       console.log(req.headers['accept-language']);
   //    cookies.set('locale', lang);
     }
     else {
       console.log("@@ getInitialProps @ client");
       const cookies = new Cookies();
-      console.log("@@ Header username = " + cookies.get('username'));
-      initProps.username = cookies.get('username');
+      console.log("@@ Header username = " + cookies.get('nickname'));
+      initProps.username = cookies.get('nickname');
+      initProps.avatar = cookies.get('avatar');
     }
 
     initProps.locale = 'tw';
@@ -69,6 +72,7 @@ class Index extends React.Component {
     initProps.translations = translations;
 
     store.dispatch(setUsername(initProps.username));
+    store.dispatch(setAvatar(initProps.avatar));
     store.dispatch(setLocale(initProps.locale));
 
     if (isServer) {
@@ -255,6 +259,7 @@ class Index extends React.Component {
   render () {
     var carouselDivStyle = {
         // https://stackoverflow.com/questions/10487292/position-absolute-but-relative-to-parent
+        marginTop: '20px',
         position: 'relative',
       //  border: '1px solid red',
     }
@@ -468,6 +473,7 @@ class Index extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
+    avatar: state.avatar,
     count: state.count,
     locale: state.locale,
   }
@@ -477,6 +483,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addCount: bindActionCreators(addCount, dispatch),
     setUsername: bindActionCreators(setUsername, dispatch),
+    setAvatar: bindActionCreators(setAvatar, dispatch),
     setLocale: bindActionCreators(setLocale, dispatch),
   }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { initStore, addCount, setUsername } from '../store'
+import { initStore, addCount, setUsername, setAvatar } from '../store'
 import withRedux from 'next-redux-wrapper'
 import GoogleLogin from 'react-google-login';
 import jsCookie from 'js-cookie';
@@ -18,29 +18,26 @@ import Tabs from 'react-toolbox/lib/tabs/Tabs'
 import Input from 'react-toolbox/lib/input/Input';
 import ReactLoading from 'react-loading';
 
-
-export function setUserCookie(userpk, username, email, token, valid) {
-  jsCookie.set('userpk', userpk);
-  jsCookie.set('username', username);
-  jsCookie.set('email', email);
+export function cookieSetUserProfile(pk, nickname, avatar, token) {
+  jsCookie.set('userid', pk);
+  jsCookie.set('nickname', nickname);
+  jsCookie.set('avatar', avatar);
   jsCookie.set('token', token);
-  jsCookie.set('valid', valid);
-  console.log('@@ setUserCookie (' + userpk + ', ' + username + ', ' + email + ', ' + token + ', ' + valid + ')');
+  console.log('@@ cookieSetUserProfile (' + pk + ', ' + nickname + ', ' + avatar + ', ' + token + ')');
 }
 
-export function clearUserCookie() {
-  jsCookie.remove('userpk');
-  jsCookie.remove('username');
-  jsCookie.remove('email');
+export function cookieClearUserProfile() {
+  jsCookie.remove('userid');
+  jsCookie.remove('nickname');
+  jsCookie.remove('avatar');
   jsCookie.remove('token');
-  jsCookie.remove('valid');
-  console.log('@@ clearUserCookie ');
+  console.log('@@ cookieClearUserProfile ');
 }
 
 export function logoutUser() {
     console.log("+logoutUser");
 
-    clearUserCookie();
+    cookieClearUserProfile();
 
     var success = false;
     fetch(BACKEND_URL + '/rest-auth/logout/', {
@@ -80,6 +77,8 @@ export function logoutUser() {
 
 async function getUserProfile(key) {
     console.log("+getUserProfile (" + key + ")");
+
+    // retrieve pk first
     var response = await fetch(BACKEND_URL + '/rest-auth/user/', {
         method: 'GET',
         headers: {
@@ -94,9 +93,30 @@ async function getUserProfile(key) {
     console.log(response.status);
     //console.log(data);
     if (response.status === 200) {
-      console.log('getUserProfile success, username: '+ data.username +', pk = ' + data.pk);
-      setUserCookie (data.pk, data.username, data.email, key, true);
-      //Header.isUserLoggedIn = true;
+      console.log('User id = ' + data.pk);
+      result = true;
+    }
+    else {
+      result = false;
+    }
+
+
+    // retrieve extended user profile
+    var user_id = data.pk;
+    var response = await fetch(BACKEND_URL + '/user/' + user_id +'/', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Token '+ key
+        },
+    });
+
+    data = await response.json();
+    console.log(response.status);
+    console.log(data);
+    if (response.status === 200) {
+      cookieSetUserProfile(user_id, data.profile.nick_name, data.profile.avatar_url, key)
       // redirect to home
       Router.push('/');
       result = true;
@@ -110,54 +130,6 @@ async function getUserProfile(key) {
 }
 
 
-/*
-function getUserProfile(key) {
-    console.log("+getUserProfile (" + key + ")");
-
-    var success = false;
-    fetch(BACKEND_URL + '/rest-auth/user/', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Token '+ key
-        },
-    })
-    .then(function checkStatus(response) {
-        if (response.status === 200) {
-            success = true;
-        } else {
-            success = false;
-        }
-        return response.json();
-
-       })
-       .then(function(data) {
-       	//完成
-       	  if (success) {
-       	      console.log('getUserProfile success, username: '+ data.username);
-              setUserCookie (data.username, data.email, key, true);
-              //Header.isUserLoggedIn = true;
-              // redirect to home
-              Router.push('/');
-       	      //history.push("/");  // go to root page
-       	 //     var user_get = JSON.parse(sessionStorage.getItem('CurrentUser'));
-       	 //     console.log("@@ email: " + user_get.email);
-       	 //     console.log("@@ isloggedIn: " + user_get.valid);
-       	  }
-       	  else {
-       	      console.log(JSON.stringify(data));
-       	  }
-       }).catch(function(error) {
-           console.log('request failed: ', error);
-       }).then(function(errorData){
-          //失敗
-          console.log(JSON.stringify(errorData));
-       });
-
-       console.log("-getUserProfile submit");
-};
-*/
 
 async function regularRegister(_email, _pswd) {
   console.log("+Register (regular) submit (" + _email + ", " + _pswd +")");
@@ -187,49 +159,7 @@ async function regularRegister(_email, _pswd) {
   console.log("-Register (regular) submit");
   return result;
 }
-/*
-function regularRegister(_email, _pswd) {
-  console.log("+Register (regular) submit (" + _email + ", " + _pswd +")");
-  // clear the current user in session storage
-  // sessionStorage.removeItem("CurrentUser");
-  //console.log("@@@@ "+ sessionStorage.getItem('CurrentUser'));
 
-  var token_acquired = false;
-  fetch(BACKEND_URL + '/rest-auth/registration/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email:_email, password1:_pswd, password2:_pswd})
-  })
-  .then(function checkStatus(response) {
-      if (response.status === 200) {
-          token_acquired = true;
-      } else {
-          token_acquired = false;
-      }
-      return response.json();
-     })
-   .then(function(data) {
-      //完成
-        if (token_acquired) {
-            console.log('register success, key: '+ data.key);
-            getUserProfile(data.key);
-        }
-        else {
-            console.log(JSON.stringify(data));
-        }
-     }).catch(function(error) {
-         console.log('request failed: ', error);
-     }).then(function(errorData){
-        //失敗
-        console.log(JSON.stringify(errorData));
-     });
-
-     console.log("-Register (regular) submit");
-}
-*/
 
 async function regularLogin(_email, _pswd) {
   console.log("+Login (regular) submit (" + _email + ", " + _pswd +")");
@@ -577,6 +507,7 @@ class LoginDialog extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
+    avatar: state.avatar,
     count: state.count
   }
 }
@@ -585,6 +516,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addCount: bindActionCreators(addCount, dispatch),
     setUsername: bindActionCreators(setUsername, dispatch),
+    setAvatar: bindActionCreators(setAvatar, dispatch),
   }
 }
 

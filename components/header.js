@@ -3,10 +3,11 @@ import React from 'react';
 import { Link } from "../routes";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { initStore, addCount, setUsername } from '../store'
+import { initStore, addCount, setUsername, setAvatar } from '../store'
 import { translate } from 'react-i18next'
 import Head from 'next/head'
 import LoginDialog from './loginDialog'
+import { Image } from 'semantic-ui-react'
 //import ReactDOM from 'react-dom';
 
 import {
@@ -29,7 +30,6 @@ class Header extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    //console.log('@@ Header ctor isUserLoggedIn (' + Header.isUserLoggedIn + ')');
     this.t = props.t
   }
 
@@ -40,9 +40,6 @@ class Header extends React.Component {
 
   render () {
     // var loginMsg = <FormattedMessage id='login' description='' defaultMessage='Login'/>
-    var currentUserName = null;
-    var loginDisplay = '';
-    var isUserLoggedIn = false;
 
     return (
     <div className='header'>
@@ -68,8 +65,11 @@ class Header extends React.Component {
            this.props.username ? (
                    <li className="dropdown top_menu">
                        <a className="dropdown-toggle top_item" data-toggle="dropdown" href="#">
-                           <span className="glyphicon glyphicon-user"></span>
-                           { ' ' + this.props.username }
+                       {
+                      //     <span className="glyphicon glyphicon-user"></span>
+                    //       { ' ' + this.props.username }
+                       }
+                         <Image src={this.props.avatar} avatar size='mini'/>
                        </a>
                        <ul className="dropdown-menu">
                          <li><a href="#">Profile</a></li>
@@ -78,8 +78,6 @@ class Header extends React.Component {
                    </li>
            )
            : (
-             //  loginDisplay = <li className="top_menu"><Link href='/login'><a className="top_item"> {this.t('login')} </a></Link></li>;
-             //  loginDisplay = <li className="top_menu"><Button label={this.t('login')} onClick={this.handleToggle} /></li>;
              <li className="top_menu"><a className="top_item" href='#' onClick={this.handleToggleLogin}> {this.t('login')} </a></li>
            )
          }
@@ -168,6 +166,7 @@ class Header extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
+    avatar: state.avatar,
     count: state.count
   }
 }
@@ -176,6 +175,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addCount: bindActionCreators(addCount, dispatch),
     setUsername: bindActionCreators(setUsername, dispatch),
+    setAvatar: bindActionCreators(setAvatar, dispatch),
   }
 }
 

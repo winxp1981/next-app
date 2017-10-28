@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '../components/layout'
 import Cookies from 'universal-cookie';
 import { bindActionCreators } from 'redux'
-import { initStore, addCount, setUsername } from '../store'
+import { initStore, addCount, setUsername, setAvatar } from '../store'
 import withRedux from 'next-redux-wrapper'
 import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
@@ -68,6 +68,7 @@ class RoomHost extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
+    avatar: state.avatar,
     count: state.count,
   }
 }

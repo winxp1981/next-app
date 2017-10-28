@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '../components/layout'
 import Cookies from 'universal-cookie';
 import { bindActionCreators } from 'redux'
-import { initStore, addCount, setUsername } from '../store'
+import { initStore, addCount, setUsername, setAvatar } from '../store'
 import { connect } from 'react-redux'
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { translate } from 'react-i18next'

@@ -3,7 +3,7 @@ import Layout from '../components/layout'
 import jsCookie from 'js-cookie';
 import Cookies from 'universal-cookie'
 import { bindActionCreators } from 'redux'
-import { initStore, addCount, setUsername, setLocale} from '../store'
+import { initStore, addCount, setUsername, setLocale, setAvatar} from '../store'
 import withRedux from 'next-redux-wrapper'
 import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
@@ -31,10 +31,11 @@ class RoomDetail extends React.Component {
     if (isServer) {
       console.log("RoomDetail getInitialProps isSserver: "+ isServer);
       const cookies = new Cookies(req.headers.cookie);
-      console.log("@@ cookies username = " + cookies.get('username'));
-      console.log("@@ cookies email = " + cookies.get('email'));
+      console.log("@@ cookies username = " + cookies.get('nickname'));
+      console.log("@@ cookies avatar = " + cookies.get('avatar'));
       console.log("@@ cookies token = " + cookies.get('token'));
-      initProps.username = cookies.get('username');
+      initProps.username = cookies.get('nickname');
+      initProps.avatar = cookies.get('avatar')
       initProps.token = cookies.get('token')
       if (initProps.token === undefined) {
         initProps.loggedIn = false;
@@ -43,6 +44,7 @@ class RoomDetail extends React.Component {
       }
 
       store.dispatch(setUsername(initProps.username));
+      store.dispatch(setAvatar(initProps.avatar));
       store.dispatch(setLocale(initProps.locale));
     }
 
@@ -414,6 +416,7 @@ class RoomDetail extends React.Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
+    avatar: state.avatar,
     locale: state.locale,
   }
 }
@@ -422,6 +425,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addCount: bindActionCreators(addCount, dispatch),
     setUsername: bindActionCreators(setUsername, dispatch),
+    setAvatar: bindActionCreators(setAvatar, dispatch),
     setLocale: bindActionCreators(setLocale, dispatch),
   }
 }
