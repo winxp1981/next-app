@@ -43,24 +43,29 @@ class Index extends React.Component {
 
   static async getInitialProps({ req , store, isServer}) {  // only support in server side if there is req in parameter
     const initProps = {};
+    let cookies = null;
     if (req && req.headers) {
-      console.log("@@ getInitialProps @ server");
-      const cookies = new Cookies(req.headers.cookie);
-      console.log("@@ Header username = " + cookies.get('nickname'));
-      console.log("@@ Header avatar = " + cookies.get('avatar'));
-      console.log("@@ Header token = " + cookies.get('token'));
-      initProps.username = cookies.get('nickname');
-      initProps.avatar = cookies.get('avatar');
-      console.log(req.headers['accept-language']);
-  //    cookies.set('locale', lang);
+      console.log("Index getInitialProps @ server");
+      cookies = new Cookies(req.headers.cookie);
     }
     else {
       console.log("@@ getInitialProps @ client");
-      const cookies = new Cookies();
-      console.log("@@ Header username = " + cookies.get('nickname'));
-      initProps.username = cookies.get('nickname');
-      initProps.avatar = cookies.get('avatar');
+      cookies = new Cookies();
     }
+
+    console.log("@ Index username = " + cookies.get('nickname'));
+    console.log("@ Index avatar = " + cookies.get('avatar'));
+    console.log("@ Index token = " + cookies.get('token'));
+    initProps.username = cookies.get('nickname');
+    initProps.avatar = cookies.get('avatar');
+    let lang = cookies.get('lang');
+    if (lang === undefined) {
+      initProps.lang = 'tw';
+    }
+    else {
+      initProps.lang = lang;
+    }
+
 
     const translations = await getTranslations(
       '',
@@ -170,7 +175,7 @@ class Index extends React.Component {
   constructor (props) {
     console.log ('+Index ctor')
     super(props);
-    this.i18n = startI18n(props.translations, 'tw');
+    this.i18n = startI18n(props.translations, props.lang);
 
     this.state = {
       rooms: [],
@@ -394,7 +399,7 @@ class Index extends React.Component {
 
     return (
     <I18nextProvider i18n={this.i18n}>
-    <Layout title = "Welcome to Roomoca">
+    <Layout title = "Welcome to Roomoca" lang={this.props.lang}>
         <Head>
         {
         //  <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>

@@ -29,37 +29,14 @@ class Layout extends React.Component {
           { /* semantic-ui-react */ }
           <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
         </Head>
-        <Header />
+        <Header lang={this.props.lang}/>
 
         { this.props.children }
 
-        <Footer />
+        <Footer/>
       </div>
     );
   }
 }
 
 export default Layout
-/*
-export default ({ children,                                                                                                                                     }) => (
-  <div>
-    <Head>
-      <title>{ title }</title>
-      <meta charSet='utf-8' />
-      <meta name='viewport' content='initial-scale=1.0, width=device-width' />
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
-      <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css" />
-    </Head>
-    <Header />
-    { this.props.userName }
-
-    { children }
-
-    <footer>
-      {'Footer'}
-    </footer>
-  </div>
-)
-*/

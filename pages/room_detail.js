@@ -1,9 +1,8 @@
 import React from 'react';
 import Layout from '../components/layout'
-import jsCookie from 'js-cookie';
 import Cookies from 'universal-cookie'
 import { bindActionCreators } from 'redux'
-import { initStore, addCount, setUsername, setLocale, setAvatar} from '../store'
+import { initStore, addCount, setUsername, setAvatar} from '../store'
 import withRedux from 'next-redux-wrapper'
 import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
@@ -21,37 +20,28 @@ class RoomDetail extends React.Component {
   static async getInitialProps({ req, store, query, isServer }) {  // only support in server side if there is req in parameter
     const initProps = {};
 
+    let cookies = null;
     if (isServer) {
       console.log("RoomDetail getInitialProps isSserver: "+ isServer);
-      const cookies = new Cookies(req.headers.cookie);
-      console.log("@@ cookies username = " + cookies.get('nickname'));
-      console.log("@@ cookies avatar = " + cookies.get('avatar'));
-      console.log("@@ cookies token = " + cookies.get('token'));
-      initProps.username = cookies.get('nickname');
-      initProps.avatar = cookies.get('avatar')
-      initProps.token = cookies.get('token')
-      if (initProps.token === undefined) {
-        initProps.loggedIn = false;
-      } else {
-        initProps.loggedIn = true;
-      }
+      cookies = new Cookies(req.headers.cookie);
     }
     else {
       console.log("RoomDetail getInitialProps @ client");
-      const cookies = new Cookies();
-      initProps.username = cookies.get('nickname');
-      initProps.avatar = cookies.get('avatar');
-      initProps.token = cookies.get('token')
-      if (initProps.token === undefined) {
-        initProps.loggedIn = false;
-      } else {
-        initProps.loggedIn = true;
-      }
+      cookies = new Cookies();
     }
 
-    initProps.locale = 'tw';
+    initProps.username = cookies.get('nickname');
+    initProps.avatar = cookies.get('avatar');
+    initProps.token = cookies.get('token')
+    initProps.lang = cookies.get('lang')
+    if (initProps.token === undefined) {
+      initProps.loggedIn = false;
+    } else {
+      initProps.loggedIn = true;
+    }
+
     const translations = await getTranslations(
-      initProps.locale,
+      '',
       ['common', 'namespace1'],
       FRONTEND_URL+'/static/locales/'
     )
@@ -59,12 +49,11 @@ class RoomDetail extends React.Component {
 
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setAvatar(initProps.avatar));
-    store.dispatch(setLocale(initProps.locale));
 
     initProps.room_id = query.id;
     // fetch room detail
     console.log('RoomDetail (id: ' + query.id +')');
-    var response = await fetch(BACKEND_URL + '/rooms/' + query.id, {
+    var response = await fetch(BACKEND_URL + '/rooms/' + query.id +'/', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -117,8 +106,8 @@ class RoomDetail extends React.Component {
 
   constructor(props) {
     super(props);
-    this.i18n = startI18n(props.translations, props.locale)
-    console.log('CTOR')
+    console.log ('room_detail CTOR: ' + props.lang)
+    this.i18n = startI18n(props.translations, props.lang)
     this.state = {
       openPopup: false,
       popUpMsg: '請先登入',
@@ -147,7 +136,7 @@ class RoomDetail extends React.Component {
     }
     else {
       console.log('請先登入');
-      this.setState({ openPopup: true, popUpMsg: '請先登入'})
+      this.setState({ openPopup: true, popUpMsg: this.i18n.t('login_required')})
 
       this.timeout = setTimeout(() => {
         this.setState({ openPopup: false })
@@ -208,7 +197,7 @@ class RoomDetail extends React.Component {
         <Button circular icon='heart' size='large' color='pink' /> : <Button circular icon='empty heart' size='large' />
     return (
       <I18nextProvider i18n={this.i18n}>
-      <Layout title = "Welcome to Roomoca">
+      <Layout title = "Welcome to Roomoca" lang = {this.props.lang}>
       <Head>
         <link rel="stylesheet" href="../static/react-responsive-carousel/carousel.min.css"/>
         <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBNKKAhKocKWQ43dc6NT3fCyaLPTdxmAX0" type="text/javascript"></script>
@@ -251,7 +240,7 @@ class RoomDetail extends React.Component {
                 <div>
                   <List divided>
                     <List.Item>
-                      <Label color='orange' horizontal size='large'>坪數</Label>
+                      <Label color='orange' horizontal size='large'>{this.i18n.t('area')}</Label>
                       {this.props.room_detail.area}
                     </List.Item>
                     <List.Item>
@@ -432,7 +421,6 @@ const mapStateToProps = (state) => {
   return {
     username: state.username,
     avatar: state.avatar,
-    locale: state.locale,
   }
 }
 
@@ -441,7 +429,6 @@ const mapDispatchToProps = (dispatch) => {
     addCount: bindActionCreators(addCount, dispatch),
     setUsername: bindActionCreators(setUsername, dispatch),
     setAvatar: bindActionCreators(setAvatar, dispatch),
-    setLocale: bindActionCreators(setLocale, dispatch),
   }
 }
 // export default About

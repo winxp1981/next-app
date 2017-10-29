@@ -12,23 +12,48 @@ import Head from 'next/head'
 import AddRoom from '../components/addRoom'
 import { Header, Image, Item, Icon } from 'semantic-ui-react'
 
-
 class RoomHost extends React.Component {
   static async getInitialProps({ req, store, query }) {  // only support in server side if there is req in parameter
     const initProps = {};
-    initProps.locale = 'tw';
+    let cookies = null;
+    if (req && req.headers) {
+      console.log("RoomHost getInitialProps @ server");
+      cookies = new Cookies(req.headers.cookie);
+    }
+    else {
+      console.log("@@ getInitialProps @ client");
+      cookies = new Cookies();
+    }
+
+    console.log("@ RoomHost username = " + cookies.get('nickname'));
+    console.log("@ RoomHost avatar = " + cookies.get('avatar'));
+    console.log("@ RoomHost token = " + cookies.get('token'));
+    initProps.username = cookies.get('nickname');
+    initProps.avatar = cookies.get('avatar');
+    let lang = cookies.get('lang');
+    if (lang === undefined) {
+      initProps.lang = 'tw';
+    }
+    else {
+      initProps.lang = lang;
+    }
+
     const translations = await getTranslations(
-      initProps.locale,
+      '',
       ['common', 'namespace1'],
       FRONTEND_URL+'/static/locales/'
     )
     initProps.translations = translations;
+    // console.log (translations)
+
+    store.dispatch(setUsername(initProps.username));
+    store.dispatch(setAvatar(initProps.avatar));
     return initProps;
   }
 
   constructor(props) {
     super(props);
-    this.i18n = startI18n(props.translations, props.locale)
+    this.i18n = startI18n(props.translations, props.lang)
     console.log('hello room_host');
   }
 
@@ -45,12 +70,12 @@ class RoomHost extends React.Component {
     }
     return (
       <I18nextProvider i18n={this.i18n}>
-      <Layout title = "Welcome to Roomoca">
+      <Layout title = "Welcome to Roomoca" lang={this.props.lang}>
         <div style={headerDivStyle}>
           <Header as='h1' icon >
             <Icon name='home' color='orange' size='huge' />
             <Header.Content>
-              房東專區
+              {this.i18n.t('room_host')}
             </Header.Content>
           </Header>
         </div>

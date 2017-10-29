@@ -2,7 +2,7 @@
   "hello": "你好",
   "about": "About",
   "search": "Search",
-  "search_room": "Find a good room",
+  "search_room": "Find a room",
   "login": "Login",
   "signup": "Signup",
   "email_address": "Email address",
@@ -13,5 +13,9 @@
   "roomhost": "Host",
   "download_app": "app",
   "account": "My account",
-  "logout": "Log out"
+  "logout": "Log out",
+  "login_required": "please log in first",
+  "room_host": "Room Host",
+  "about_us": "About Us",
+  "area": "Area"
 }

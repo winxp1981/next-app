@@ -1,5 +1,6 @@
 import React from 'react';
 //import Link from 'next/link'
+import jsCookie from 'js-cookie';
 import { Link, Router } from "../routes";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -41,12 +42,21 @@ class Header extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.t = props.t
+    let lang = props.lang;
+    let lang_display = '正體中文'
+    if (lang === 'tw') {
+      lang_display = '正體中文'
+    }
+    else if (lang === 'en') {
+      lang_display = 'English'
+    }
+    else {
+    }
 
-    //console.log(props.i18n)
-    //props.i18n.changeLanguage('en');
+    console.log ('header CTOR: ' + lang)
 
     this.state = {
-      langDisplay: '正體中文',
+      langDisplay: lang_display,
       login_dialog_active: false,
     }
   }
@@ -64,14 +74,17 @@ class Header extends React.Component {
     console.log(option.key)
     if (option.key === 'TradChinese') {
       console.log('hello Chinese')
+      jsCookie.set('lang', 'tw');
       this.setState({ langDisplay: '正體中文'})
       this.props.i18n.changeLanguage('tw');
     //  window.location.reload();
     }
     else if (option.key === 'English') {
       console.log('hello English')
+      jsCookie.set('lang', 'en');
       this.setState({ langDisplay: 'English'})
       this.props.i18n.changeLanguage('en');
+      //  Router.pushRoute('room_detail', {id: 13})
       // console.log (window.location.href)
       // console.log (document.location.pathname)
       // window.location.reload();
@@ -80,8 +93,7 @@ class Header extends React.Component {
     }
 
     // update currrent page
-    // Router.pushRoute(document.location.pathname)
-    Router.push(document.location.pathname)
+    Router.pushRoute(document.location.pathname)
   }
 
   handleProfileOptionChange = (ev, data) => {

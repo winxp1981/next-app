@@ -42,7 +42,7 @@ class Footer extends React.Component {
       <div style={footerDivStyle}>
       <Divider style={dividerStyle}/>
         <List horizontal>
-          <List.Item><Link route='about' params={{id: '888'}}><a className="">關於我們</a></Link></List.Item>
+          <List.Item><Link route='about' params={{id: '888'}}><a className="">{this.t('about_us')}</a></Link></List.Item>
           <List.Item>聯繫我們</List.Item>
           <List.Item>工作機會</List.Item>
           <List.Item>服務條款</List.Item>
