@@ -2,6 +2,7 @@
   "hello": "你好",
   "about": "關於",
   "search": "搜尋",
+  "search_room": "搜尋好房屋",
   "login": "登入",
   "signup": "註冊",
   "email_address": "電子郵件地址",
@@ -10,5 +11,7 @@
   "login_google": "Google+ 登入",
   "tenant": "我要租屋",
   "roomhost": "成為房東",
-  "download_app": "下載app"
+  "download_app": "下載app",
+  "account": "我的帳戶",
+  "logout": "登出"
 }

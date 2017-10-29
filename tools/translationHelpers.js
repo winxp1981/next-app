@@ -9,13 +9,27 @@ import 'isomorphic-fetch'
  * @param {string} baseUrl - Locale location.
  * @return {object} Fetched translation files.
  */
-export async function getTranslation (lang, files, baseUrl) {
-  let translation = {}
+export async function getTranslations (lang, files, baseUrl) {
+  let translationEN = {}
+  let translationTW = {}
 
+  // EN
+  let langEN = 'en'
   for (let file of files) {
-    const response = await fetch(`${baseUrl}${lang}/${file}.json`)
-    translation[file] = await response.json()
+    //const response = await fetch(`${baseUrl}${lang}/${file}.json`)
+    const response = await fetch(`${baseUrl}${langEN}/${file}.json`)
+    translationEN[file] = await response.json()
   }
 
-  return { [lang]: translation }
+  // TW
+  let langTW = 'tw'
+  for (let file of files) {
+    const response = await fetch(`${baseUrl}${langTW}/${file}.json`)
+    translationTW[file] = await response.json()
+  }
+
+  return {
+    [langEN]: translationEN,
+    [langTW]: translationTW
+  }
 }

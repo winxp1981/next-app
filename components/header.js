@@ -17,13 +17,15 @@ import {
 
 const langOptions = [
   { key: 'TradChinese', text: '正體中文', value:1 },
-//  { key: 'English', text: 'English', value:2 },
+  { key: 'English', text: 'English', value:2 },
 ]
 
+/*
 const profileOptions = [
   { key: 'account', text: '我的帳戶', value:1, icon: 'user' },
   { key: 'sign-out', text: '登出', value:2, icon: 'sign out' },
 ]
+*/
 
 class Header extends React.Component {
 
@@ -39,6 +41,9 @@ class Header extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.t = props.t
+
+    //console.log(props.i18n)
+    //props.i18n.changeLanguage('en');
 
     this.state = {
       langDisplay: '正體中文',
@@ -60,28 +65,48 @@ class Header extends React.Component {
     if (option.key === 'TradChinese') {
       console.log('hello Chinese')
       this.setState({ langDisplay: '正體中文'})
+      this.props.i18n.changeLanguage('tw');
+    //  window.location.reload();
     }
     else if (option.key === 'English') {
       console.log('hello English')
       this.setState({ langDisplay: 'English'})
-      console.log (window.location.href)
-      console.log (document.location.pathname)
-    //  Router.pushRoute(document.location.pathname)
-    //  this.props.setLocale('en');
+      this.props.i18n.changeLanguage('en');
+      // console.log (window.location.href)
+      // console.log (document.location.pathname)
+      // window.location.reload();
     }
     else {
     }
+
+    // update currrent page
+    // Router.pushRoute(document.location.pathname)
+    Router.push(document.location.pathname)
   }
 
   handleProfileOptionChange = (ev, data) => {
     // See https://lodash.com/docs/#find
+    /*
     const option = _.find(profileOptions, { value: data.value })
     console.log(option.key)
     if (option.key === 'sign-out')
       this.handleLogout();
+    */
+    if (data.value === 1) {
+      console.log("我的帳戶");
+    }
+    else if (data.value === 2) {
+      console.log("登出");
+      this.handleLogout();
+    }
   }
 
   render () {
+
+    const profileOptions = [
+      { key: 'account', text: this.t('account'), value:1, icon: 'user' },
+      { key: 'sign-out', text: this.t('logout'), value:2, icon: 'sign out' },
+    ]
 
     const langTrigger = (
       <span>

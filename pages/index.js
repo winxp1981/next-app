@@ -14,7 +14,7 @@ import {
 import withRedux from 'next-redux-wrapper'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
-import { getTranslation } from '../tools/translationHelpers'
+import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
 import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header, Feed } from 'semantic-ui-react'
@@ -62,14 +62,13 @@ class Index extends React.Component {
       initProps.avatar = cookies.get('avatar');
     }
 
-    initProps.locale = 'tw';
-
-    const translations = await getTranslation(
-      initProps.locale,
+    const translations = await getTranslations(
+      '',
       ['common', 'namespace1'],
       FRONTEND_URL+'/static/locales/'
     )
     initProps.translations = translations;
+    // console.log (translations)
 
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setAvatar(initProps.avatar));
@@ -171,7 +170,7 @@ class Index extends React.Component {
   constructor (props) {
     console.log ('+Index ctor')
     super(props);
-    this.i18n = startI18n(props.translations, props.locale);
+    this.i18n = startI18n(props.translations, 'tw');
 
     this.state = {
       rooms: [],
@@ -443,9 +442,9 @@ class Index extends React.Component {
               */
             }
               <div style={inputDivStyle}>
-                <Input style={inputStyle} size='large' type='text' placeholder='搜尋好房屋' name='search' onChange={this.handleInputChange} action>
+                <Input style={inputStyle} size='large' type='text' placeholder={this.i18n.t('search_room')} name='search' onChange={this.handleInputChange} action>
                   <input />
-                  <Button type='submit' color='orange'><Icon name='search' /> Search</Button>
+                  <Button type='submit' color='orange'><Icon name='search' /> {this.i18n.t('search')}</Button>
                 </Input>
               </div>
             </div>

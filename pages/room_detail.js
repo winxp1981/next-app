@@ -8,7 +8,7 @@ import withRedux from 'next-redux-wrapper'
 import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
-import { getTranslation } from '../tools/translationHelpers'
+import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment, Button, Table, Popup } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
@@ -20,13 +20,6 @@ class RoomDetail extends React.Component {
 
   static async getInitialProps({ req, store, query, isServer }) {  // only support in server side if there is req in parameter
     const initProps = {};
-    initProps.locale = 'tw';
-    const translations = await getTranslation(
-      initProps.locale,
-      ['common', 'namespace1'],
-      FRONTEND_URL+'/static/locales/'
-    )
-    initProps.translations = translations;
 
     if (isServer) {
       console.log("RoomDetail getInitialProps isSserver: "+ isServer);
@@ -42,11 +35,31 @@ class RoomDetail extends React.Component {
       } else {
         initProps.loggedIn = true;
       }
-
-      store.dispatch(setUsername(initProps.username));
-      store.dispatch(setAvatar(initProps.avatar));
-      store.dispatch(setLocale(initProps.locale));
     }
+    else {
+      console.log("RoomDetail getInitialProps @ client");
+      const cookies = new Cookies();
+      initProps.username = cookies.get('nickname');
+      initProps.avatar = cookies.get('avatar');
+      initProps.token = cookies.get('token')
+      if (initProps.token === undefined) {
+        initProps.loggedIn = false;
+      } else {
+        initProps.loggedIn = true;
+      }
+    }
+
+    initProps.locale = 'tw';
+    const translations = await getTranslations(
+      initProps.locale,
+      ['common', 'namespace1'],
+      FRONTEND_URL+'/static/locales/'
+    )
+    initProps.translations = translations;
+
+    store.dispatch(setUsername(initProps.username));
+    store.dispatch(setAvatar(initProps.avatar));
+    store.dispatch(setLocale(initProps.locale));
 
     initProps.room_id = query.id;
     // fetch room detail

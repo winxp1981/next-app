@@ -7,7 +7,7 @@ import withRedux from 'next-redux-wrapper'
 import { translate } from 'react-i18next'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
-import { getTranslation } from '../tools/translationHelpers'
+import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
 import AddRoom from '../components/addRoom'
 import { Header, Image, Item, Icon } from 'semantic-ui-react'
@@ -17,7 +17,7 @@ class RoomHost extends React.Component {
   static async getInitialProps({ req, store, query }) {  // only support in server side if there is req in parameter
     const initProps = {};
     initProps.locale = 'tw';
-    const translations = await getTranslation(
+    const translations = await getTranslations(
       initProps.locale,
       ['common', 'namespace1'],
       FRONTEND_URL+'/static/locales/'
