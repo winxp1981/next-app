@@ -14,7 +14,6 @@ import {
 import withRedux from 'next-redux-wrapper'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
-import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
 import { Input, Button } from 'semantic-ui-react'
 import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header, Feed } from 'semantic-ui-react'
@@ -41,7 +40,7 @@ class Index extends React.Component {
     console.log(data.value);
   };
 
-  static async getInitialProps({ req , store, isServer}) {  // only support in server side if there is req in parameter
+  static async getInitialProps({ req , store, query, isServer }) {  // only support in server side if there is req in parameter
     const initProps = {};
     let cookies = null;
     if (req && req.headers) {
@@ -65,15 +64,6 @@ class Index extends React.Component {
     else {
       initProps.lang = lang;
     }
-
-
-    const translations = await getTranslations(
-      '',
-      ['common', 'namespace1'],
-      FRONTEND_URL+'/static/locales/'
-    )
-    initProps.translations = translations;
-    // console.log (translations)
 
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setAvatar(initProps.avatar));
@@ -117,6 +107,9 @@ class Index extends React.Component {
     if (!process.browser) { // server
       console.log('Index componentWillMount on server');
     }
+    else {
+      console.log('Index componentWillMount on client');
+    }
   }
 
   componentWillUnmount() {
@@ -125,57 +118,14 @@ class Index extends React.Component {
 
   async componentDidMount() {
     console.log('Index componentDidMount (client only)');
-/*
-    console.log("+retrieveRoomInfo client");
-  //  const cookies = new Cookies();
-    fetch(BACKEND_URL + '/rooms/', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-  //        'Authorization': 'Token '+ cookies.get('token'),
-        },
-    }).then(res => {
-      // res instanceof Response == true.
-      if (res.ok) {
-        res.json().then(data => {
-        //  console.log(data);
-          this.setState({
-            room_data: data
-          });
-          console.log('room data retrieve complete....');
-
-          var i;
-          for (i = 0; i < data.length; i++) {
-            console.log('data['+i+']:');
-            console.log('data['+i+'].id: '+ data[i].id);
-            console.log('data['+i+'].desc: '+ data[i].description);
-            console.log('data['+i+'].room_photos: '+ data[i].room_photos.length);
-            if (data[i].room_photos.length > 0) {
-              var k;
-              for (k = 0 ; k < data[i].room_photos.length ; k++) {
-                console.log('data['+i+'].room_photos: '+ data[i].room_photos[k].photo);
-              }
-            }
-          }
-
-        });
-      } else {
-        console.log("Response wasn't perfect, status: ", res.status);
-      }
-    }, function(e) {
-      console.log("Fetch failed!", e);
-    });
-
-    console.log("-retrieveRoomInfo client");
-*/
   }
 
 
   constructor (props) {
     console.log ('+Index ctor')
     super(props);
-    this.i18n = startI18n(props.translations, props.lang);
+    this.i18n = startI18n(this.props.lang);
+  //  console.log(this.i18n)
 
     this.state = {
       rooms: [],

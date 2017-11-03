@@ -106,8 +106,12 @@ class Header extends React.Component {
     */
     if (data.value === 1) {
       console.log("我的帳戶");
+      Router.pushRoute('/account')
     }
     else if (data.value === 2) {
+      console.log("我的收藏");
+    }
+    else if (data.value === 3) {
       console.log("登出");
       this.handleLogout();
     }
@@ -117,7 +121,8 @@ class Header extends React.Component {
 
     const profileOptions = [
       { key: 'account', text: this.t('account'), value:1, icon: 'user' },
-      { key: 'sign-out', text: this.t('logout'), value:2, icon: 'sign out' },
+      { key: 'collection', text: this.t('collection'), value:2, icon: 'like' },
+      { key: 'sign-out', text: this.t('logout'), value:3, icon: 'sign out' },
     ]
 
     const langTrigger = (

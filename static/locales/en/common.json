@@ -13,6 +13,7 @@
   "roomhost": "Host",
   "download_app": "app",
   "account": "My account",
+  "collection": "My collection",
   "logout": "Log out",
   "login_required": "please log in first",
   "room_host": "Room Host",

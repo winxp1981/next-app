@@ -35,13 +35,7 @@ async function sendVerifyEmail(_key) {
 class Verify extends React.Component {
   static async getInitialProps({ req, store, query }) {  // only support in server side if there is req in parameter
     const initProps = {};
-    initProps.locale = 'tw';
-    const translations = await getTranslation(
-      initProps.locale,
-      ['common', 'namespace1'],
-      FRONTEND_URL+'/static/locales/'
-    )
-    initProps.translations = translations;
+
     console.log(query.key);
     initProps.account_verified_success = await sendVerifyEmail(query.key);
   //  console.log(initProps.account_verified_success);
@@ -50,7 +44,6 @@ class Verify extends React.Component {
 
   constructor(props) {
     super(props);
-    this.i18n = startI18n(props.translations, props.locale)
     console.log('hello verify');
   }
 

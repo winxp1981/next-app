@@ -43,14 +43,6 @@ class About extends React.Component {
       initProps.lang = lang;
     }
 
-    const translations = await getTranslations(
-      '',
-      ['common', 'namespace1'],
-      FRONTEND_URL+'/static/locales/'
-    )
-    initProps.translations = translations;
-    // console.log (translations)
-
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setAvatar(initProps.avatar));
     console.log(query.id);
@@ -59,7 +51,8 @@ class About extends React.Component {
 
   constructor(props) {
     super(props);
-    this.i18n = startI18n(props.translations, props.lang)
+    this.i18n = startI18n(this.props.lang);
+
     console.log('hello about');
   }
 

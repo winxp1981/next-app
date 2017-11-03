@@ -1,6 +1,8 @@
 /* global fetch */
 import 'isomorphic-fetch'
 
+// !!! NOT USED FOR NOW  !!!
+
 /**
  * Fetch translation file(s).
  * @function getTranslation

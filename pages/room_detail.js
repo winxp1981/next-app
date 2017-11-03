@@ -40,13 +40,6 @@ class RoomDetail extends React.Component {
       initProps.loggedIn = true;
     }
 
-    const translations = await getTranslations(
-      '',
-      ['common', 'namespace1'],
-      FRONTEND_URL+'/static/locales/'
-    )
-    initProps.translations = translations;
-
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setAvatar(initProps.avatar));
 
@@ -107,7 +100,9 @@ class RoomDetail extends React.Component {
   constructor(props) {
     super(props);
     console.log ('room_detail CTOR: ' + props.lang)
-    this.i18n = startI18n(props.translations, props.lang)
+    this.i18n = startI18n();
+    this.i18n.changeLanguage(this.props.lang);
+    
     this.state = {
       openPopup: false,
       popUpMsg: '請先登入',
