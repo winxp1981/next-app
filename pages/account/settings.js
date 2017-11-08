@@ -71,13 +71,13 @@ class Settings extends React.Component {
 
     var greetingDivStyle = {
       //  border: '1px solid red',
-        width: '70%',
+        width: '90%',
         margin: '0 auto',
         marginTop: '50px',
     }
     var settingsDivStyle = {
       //  border: '1px solid red',
-        width: '70%',
+        width: '90%',
         margin: '0 auto',
         marginTop: '50px',
     }

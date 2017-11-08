@@ -33,7 +33,14 @@ class RoomDetail extends React.Component {
     initProps.username = cookies.get('nickname');
     initProps.avatar = cookies.get('avatar');
     initProps.token = cookies.get('token')
-    initProps.lang = cookies.get('lang')
+    let lang = cookies.get('lang')
+    if (lang === undefined) {
+      initProps.lang = 'tw';
+    }
+    else {
+      initProps.lang = lang;
+    }
+
     if (initProps.token === undefined) {
       initProps.loggedIn = false;
     } else {
@@ -99,10 +106,9 @@ class RoomDetail extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log ('room_detail CTOR: ' + props.lang)
-    this.i18n = startI18n();
-    this.i18n.changeLanguage(this.props.lang);
-    
+    console.log ('room_detail CTOR: ' + this.props.lang)
+    this.i18n = startI18n(this.props.lang);
+
     this.state = {
       openPopup: false,
       popUpMsg: '請先登入',

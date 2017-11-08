@@ -27,60 +27,158 @@ const room_type = [
   { key: 4, text: '整層住家', value: 4 },
 ]
 
+
+function reader (file) {
+ return new Promise(function (resolve, reject) {
+  let reader = new FileReader();
+
+  reader.onloadend = function () {
+   resolve(reader);
+  };
+
+   reader.readAsText(file);
+ });
+}
+
 class AddRoom extends React.Component {
   onDrop(files) {
     console.log('total: '+files.length + ' files')
+
+    var _photo_files = []
+
+    var i = 0;
+    for (i = 0 ; i < files.length ; i++) {
+      console.log ('file name: '+ files[i].name)
+      if (files[i].name.endsWith(".json")) {
+        console.log (i);
+        this.setState({
+          json_file: files[i]
+        });
+      }
+      else {
+        _photo_files.push(files[i])
+      }
+    }
+
+    // photo files
     this.setState({
-      files: files
+      photo_files: _photo_files
     });
   }
 
+
+  async addRoomWithJSON(userpk, json_file) {
+    console.log("+addRoomWithJSON");
+
+    let room_id = -1;
+
+    if (json_file !== null) {
+      console.log('addRoom with JSON: ' + json_file.name)
+
+    //  var reader = new FileReaderSync();
+
+      await reader(json_file)
+       .then( async(reader) => {
+         var raw_config = reader.result;
+         console.log(raw_config)
+
+         var obj = JSON.parse(raw_config, function (k, v) {
+           if (k === 'host') {
+             return userpk;
+           }
+           return v;
+         });
+         console.log(obj)
+         var _body = JSON.stringify(obj);
+         console.log(_body)
+
+         var response = await fetch(BACKEND_URL + '/rooms/', {
+             method: 'POST',
+             headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json',
+             },
+             body: _body
+         });
+
+         var data = await response.json();
+         console.log(response.status);
+         //console.log(data);
+         if (response.status === 200 ||
+             response.status === 201)   // 201: The request has been fulfilled and has resulted in one or more new resources being created.
+         {
+           console.log(data);
+           console.log('room id : ' + data.id);
+           room_id = data.id;
+         }
+         else {
+           console.log(data);
+           room_id = -1;
+         }
+       })
+       .catch(function (error) {
+        console.log(error);
+       });
+    }
+    else {
+      console.log('ERROR JSON is null')
+      return -1;
+    }
+
+    console.log("-addRoomWithJSON return " + room_id);
+    return room_id;
+  }
+
+
   async addRoom(userpk) {
     console.log("+addRoom");
+
+    var _body = JSON.stringify(
+        {
+          host: userpk, // get pk from cookie
+          location: this.state.location,
+          title: this.state.title,
+          description: this.state.description,
+          area: this.state.area,
+          layout: this.state.layout,
+          floor: this.state.floor,
+          direction: this.state.direction,
+          age: this.state.age,
+          building_type: this.state.building_type,
+          room_type: this.state.room_type,
+          price_month: this.state.price_month,
+          price_quarter: this.state.price_quarter,
+          price_year: this.state.price_year,
+          deposit: this.state.deposit,
+          mgmt_fee: this.state.mgmt_fee,
+          parking: this.state.parking,
+          balcony: this.state.balcony,
+          pet: this.state.pet,
+          cook: this.state.cook,
+          mrt: this.state.mrt,
+          tv: this.state.tv,
+          ac: this.state.ac,
+          ref: this.state.ref,
+          water_hearter: this.state.water_hearter,
+          natural_gas: this.state.natural_gas,
+          cabel_tv: this.state.cabel_tv,
+          network: this.state.network,
+          wash_machine: this.state.wash_machine,
+          bed: this.state.bed,
+          wardrobe: this.state.wardrobe,
+          table: this.state.table,
+          sofa: this.state.sofa,
+          chair: this.state.chair,
+        }
+      )
+
     var response = await fetch(BACKEND_URL + '/rooms/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-          {
-            host: userpk, // get pk from cookie
-            location: this.state.location,
-            title: this.state.title,
-            description: this.state.description,
-            area: this.state.area,
-            layout: this.state.layout,
-            floor: this.state.floor,
-            direction: this.state.direction,
-            age: this.state.age,
-            building_type: this.state.building_type,
-            room_type: this.state.room_type,
-            price_month: this.state.price_month,
-            price_quarter: this.state.price_quarter,
-            price_year: this.state.price_year,
-            deposit: this.state.deposit,
-            mgmt_fee: this.state.mgmt_fee,
-            parking: this.state.parking,
-            balcony: this.state.balcony,
-            pet: this.state.pet,
-            cook: this.state.cook,
-            mrt: this.state.mrt,
-            tv: this.state.tv,
-            ac: this.state.ac,
-            ref: this.state.ref,
-            water_hearter: this.state.water_hearter,
-            natural_gas: this.state.natural_gas,
-            cabel_tv: this.state.cabel_tv,
-            network: this.state.network,
-            wash_machine: this.state.wash_machine,
-            bed: this.state.bed,
-            wardrobe: this.state.wardrobe,
-            table: this.state.table,
-            sofa: this.state.sofa,
-            chair: this.state.chair,
-          }
-        )
+        body: _body
     });
 
     var room_id = -1;
@@ -104,9 +202,9 @@ class AddRoom extends React.Component {
     return room_id;
   }
 
-  async uploadRoomPhotos(_key, room_id, _files) {
-    console.log("+uploadRoomPhotos (" + _files.length + " photos)");
-    if (_files.length === 0)
+  async uploadRoomPhotos(_key, room_id, _photo_files) {
+    console.log("+uploadRoomPhotos (" + _photo_files.length + " photos)");
+    if (_photo_files.length === 0)
         return true;
 
     this.setState({
@@ -114,15 +212,15 @@ class AddRoom extends React.Component {
     });
 
     this.setState({
-      total_files: _files.length
+      total_photo_files: _photo_files.length
     });
 
     var i;
-    for (i = 0 ; i < _files.length ; i++) {
+    for (i = 0 ; i < _photo_files.length ; i++) {
       console.log ('uploading image: '+i)
       var fd  = new FormData();
       fd.append('room', room_id);
-      fd.append('photo', _files[i]);
+      fd.append('photo', _photo_files[i]);
 
       var response = await fetch(BACKEND_URL + '/roomsimage/', {
           method: 'POST',
@@ -215,13 +313,44 @@ class AddRoom extends React.Component {
     this.showInputState();
     this.showCheckboxState();
 
-    let room_id = await this.addRoom(userpk);
+/*
+    // check if json file was provided
+    if (this.state.json_file !== null) {
+      console.log(this.state.json_file.name)
+
+      var reader = new FileReader();
+      reader.onloadend = function(e) {
+        var rawData = reader.result;
+        console.log(rawData)
+      }
+
+      reader.readAsText(this.state.json_file);
+    }
+*/
+
+    let room_id = 0;
+    // no json, use field data instead
+    if (this.state.json_file !== null) {
+      room_id = await this.addRoomWithJSON(userpk, this.state.json_file);
+    }
+    else {
+      room_id = await this.addRoom(userpk);
+    }
 
     if (room_id > 0) {
-       //  console.log('@@ total: '+this.state.files.length + ' files')
-      await this.uploadRoomPhotos(0, room_id, this.state.files);
+       //  console.log('@@ total: '+this.state.photo_files.length + ' files')
+      await this.uploadRoomPhotos(0, room_id, this.state.photo_files);
     }
     console.log('-handleUpload');
+
+    // clear state
+    this.setState({
+      json_file: null
+    });
+
+    this.setState({
+      photo_files: []
+    });
   }
 
   handleCbClick = (ev, data) => {
@@ -263,9 +392,10 @@ class AddRoom extends React.Component {
   constructor() {
     super()
     this.state = {
-      files: [],
+      photo_files: [],
+      json_file: null,
       current_file_index: 0,
-      total_files: 1,
+      total_photo_files: 0,
       uploading: false,
       message_to_user: '',
 
@@ -439,11 +569,11 @@ class AddRoom extends React.Component {
         <aside>
           <ul>
             {
-              this.state.files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
+              this.state.photo_files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
             }
           </ul>
         </aside>
-        { (this.state.files.length > 0 && this.state.uploading)? <Progress value={this.state.current_file_index} total={this.state.total_files} color='yellow' /> : ''}
+        { (this.state.photo_files.length > 0 && this.state.uploading)? <Progress value={this.state.current_file_index} total={this.state.total_photo_files} color='yellow' /> : ''}
         <Button color='green' onClick={this.handleUpload}><Icon name='plus' />add</Button>
         { (this.state.message_to_user.length > 0) ?
         <Message negative>

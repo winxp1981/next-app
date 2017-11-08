@@ -58,6 +58,7 @@ class Index extends React.Component {
     initProps.username = cookies.get('nickname');
     initProps.avatar = cookies.get('avatar');
     let lang = cookies.get('lang');
+    console.log("@ Index lang = " + lang);
     if (lang === undefined) {
       initProps.lang = 'tw';
     }
@@ -303,10 +304,10 @@ class Index extends React.Component {
         <Card style={cardStyle}>
         <div style={roomPhotoMainDivStyle}>
         {
-          (room.room_photos.length > 0) ?
+          (room.room_thumb) ?
             <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
               <LazyLoad placeholder={<ReactLoading type='bars' color='#444' height={80} width={80} delay={0} />}
-              height={100}><img src={room.room_photos[0].photo} width='100%' className='roomCardImg' /></LazyLoad>
+              height={100}><img src={room.room_thumb.photo} width='100%' className='roomCardImg' /></LazyLoad>
             </ExternalLink> :
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
