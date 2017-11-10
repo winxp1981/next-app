@@ -373,7 +373,7 @@ class LoginDialog extends React.Component {
           else {
               console.log("User cancelled login...");
           }
-      });
+      }, {scope: 'email'});
 
   }
 

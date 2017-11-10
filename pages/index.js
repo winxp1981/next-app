@@ -15,8 +15,7 @@ import withRedux from 'next-redux-wrapper'
 import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import Head from 'next/head'
-import { Input, Button } from 'semantic-ui-react'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header, Feed } from 'semantic-ui-react'
+import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Loader, Header, Feed, Input, Button, Divider } from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import ExternalLink from '../components/externalLink'  // for target='_blank'
 import LazyLoad from 'react-lazyload';
@@ -296,6 +295,13 @@ class Index extends React.Component {
       color: '#FFFFFF',
       fontSize: '300%',
     }
+    var collectionDivStyle = {
+    //    border: '1px solid red',
+        width: '540px',
+        margin: '0 auto',
+        marginTop: '20px',
+      //  borderColor: '#FFBB66',
+    }
     // render room infos
     let roomCards = this.state.rooms.map(function(room, index) {
 
@@ -363,7 +369,7 @@ class Index extends React.Component {
               opacity={0.1}
               isCentered={true}
               parallaxOffset={0}>
-              <h1 style={heroTextStyle}>租屋, 也能是一種享受!</h1>
+              <h1 style={heroTextStyle}>租屋, 可以很簡單</h1>
             </LazyHero>
           {
           /*
@@ -404,6 +410,10 @@ class Index extends React.Component {
                 </Input>
               </div>
             </div>
+        </div>
+        <div style={collectionDivStyle}>
+          <Image centered src="../static/img/roomoca_collect_64.png" />
+            <Header size='large' textAlign='center'>摩卡嚴選</Header>
         </div>
         <div style={gridDivStyle}>
           <InfiniteScroll

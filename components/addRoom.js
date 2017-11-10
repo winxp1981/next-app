@@ -458,7 +458,12 @@ class AddRoom extends React.Component {
     }
     var titleInputStyle = {
       //  float: 'right',
-        width: '100%',
+        width: '50%',
+    }
+    var descInputStyle = {
+      //  float: 'right',
+        width: '60%',
+        minHeight: 100,
     }
     var checkboxSpanStyle = {
     //    border: '1px green solid',
@@ -477,11 +482,17 @@ class AddRoom extends React.Component {
         */
       }
       <div style={infoDivStyle}>
-        <Item><Label size='big' color='pink' horizontal>地址</Label><Input placeholder='' style={titleInputStyle} name='location' onChange={this.handleInputChange}/></Item>
+        <Item><Label size='big' color='pink' horizontal>地址</Label>
+          <Input placeholder='' style={titleInputStyle} name='location' onChange={this.handleInputChange}/>
+        </Item>
         <br/>
-        <Item><Label size='big' color='pink' horizontal>標題</Label><Input placeholder='' style={titleInputStyle} name='title' onChange={this.handleInputChange}/></Item>
+        <Item><Label size='big' color='pink' horizontal>標題</Label>
+          <Input placeholder='' style={titleInputStyle} name='title' onChange={this.handleInputChange}/>
+        </Item>
         <br/>
-        <Item><Label size='big' color='teal' horizontal>描述</Label><TextArea placeholder='' style={titleInputStyle} name='description' onChange={this.handleInputChange}/></Item>
+        <Item><Label size='big' color='teal' horizontal>描述</Label><br/>
+          <TextArea placeholder='' autoHeight style={descInputStyle} name='description' onChange={this.handleInputChange}/>
+        </Item>
         <br/>
         <Item><Label size='big' color='teal' horizontal>坪數</Label>
           <Input>
