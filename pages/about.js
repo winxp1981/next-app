@@ -26,7 +26,7 @@ class About extends React.Component {
       cookies = new Cookies(req.headers.cookie);
     }
     else {
-      console.log("@@ getInitialProps @ client");
+      console.log("About getInitialProps @ client");
       cookies = new Cookies();
     }
 

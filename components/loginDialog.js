@@ -53,7 +53,8 @@ export async function logoutUser() {
   console.log(data);
   if (response.status === 200) {
     // redirect to home
-    Router.push('/');
+    // Router.push('/');
+    Router.pushRoute(document.location.pathname);
     result = true;
   }
   else {
@@ -106,7 +107,8 @@ async function getUserProfile(key) {
     if (response.status === 200) {
       cookieSetUserProfile(user_id, data.profile.nick_name, data.profile.avatar_url, key)
       // redirect to home
-      Router.push('/');
+      // Router.push('/');
+      Router.pushRoute(document.location.pathname);
       result = true;
     }
     else {

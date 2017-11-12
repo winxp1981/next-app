@@ -1,6 +1,6 @@
 import React from 'react'
 // import Link from 'next/link'
-import { Link } from "../routes"
+import { Link, Router } from "../routes"
 import Layout from '../components/layout'
 import Cookies from 'universal-cookie'
 import { bindActionCreators } from 'redux'
@@ -38,6 +38,25 @@ class Index extends React.Component {
     this.setState({value: data.value});
     console.log(data.value);
   };
+
+  handleSearchInputChange = (ev) => {
+    const target = ev.target;
+    const value = target.value;
+    const name = target.name;
+    console.log('['+name+'] ' + value);
+    this.setState({searchKeyWord: value});
+  }
+
+  handleSearch = (ev) => {
+    console.log("handleSearch: " + this.state.searchKeyWord);
+    if (this.state.searchKeyWord.trim().length === 0) {
+      console.log('empty search string!!')
+      Router.pushRoute('search')
+    }
+    else {
+      Router.pushRoute('search', {keyword: this.state.searchKeyWord})
+    }
+  }
 
   static async getInitialProps({ req , store, query, isServer }) {  // only support in server side if there is req in parameter
     const initProps = {};
@@ -127,12 +146,16 @@ class Index extends React.Component {
     this.i18n = startI18n(this.props.lang);
   //  console.log(this.i18n)
 
+    this.handleSearchInputChange = this.handleSearchInputChange.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
+
     this.state = {
       rooms: [],
       hasMoreItems: true,
       nextHref: null,
 
       value: 'Taipei City',
+      searchKeyWord: '',
     }
     console.log ('-Index ctor')
   }
@@ -202,14 +225,6 @@ class Index extends React.Component {
     });
   }
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-    console.log('['+name+'] :' + value);
-  }
-
-
   render () {
     var carouselDivStyle = {
         // https://stackoverflow.com/questions/10487292/position-absolute-but-relative-to-parent
@@ -234,18 +249,19 @@ class Index extends React.Component {
     var searchDivStyle = {
     //    border: '1px solid green',
         position: 'absolute',
-        width: '40%',
+      //  width: '36%',
         minWidth: '400px',
     //    height: '140px',
     //    top: '70%',
         bottom: '10px',
-        left: '25%',
+        left: '30%',
+        right: '30%',
   //      marginLeft: '10%',
         paddingTop: '20px',
         paddingLeft: '20px',
         paddingRight: '20px',
         paddingBottom: '20px',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         borderRadius: '10px',
     }
     var inputStyle = {
@@ -302,6 +318,7 @@ class Index extends React.Component {
         marginTop: '20px',
       //  borderColor: '#FFBB66',
     }
+
     // render room infos
     let roomCards = this.state.rooms.map(function(room, index) {
 
@@ -404,9 +421,9 @@ class Index extends React.Component {
               */
             }
               <div style={inputDivStyle}>
-                <Input style={inputStyle} size='large' type='text' placeholder={this.i18n.t('search_room')} name='search' onChange={this.handleInputChange} action>
+                <Input style={inputStyle} size='large' type='text' placeholder={this.i18n.t('search_room')} name='search' onChange={this.handleSearchInputChange} action>
                   <input />
-                  <Button type='submit' color='orange'><Icon name='search' /> {this.i18n.t('search')}</Button>
+                  <Button type='submit' color='orange' onClick={this.handleSearch}><Icon name='search' /> {this.i18n.t('search')}</Button>
                 </Input>
               </div>
             </div>
