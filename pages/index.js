@@ -330,14 +330,18 @@ class Index extends React.Component {
           (room.room_thumb) ?
             <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
               <LazyLoad placeholder={<ReactLoading type='bars' color='#444' height={80} width={80} delay={0} />}
-              height={100}><img src={room.room_thumb.photo} width='100%' className='roomCardImg' /></LazyLoad>
+              height={100}>
+                <img src={room.room_thumb.photo} width='100%' className='roomCardImg' />
+              </LazyLoad>
             </ExternalLink> :
         //    <a href={'room/'+room.id} target='_blank'><Image src={room.room_photos[0].photo} /></a> :
             <Icon name='image' size='massive'/>
         }
+          <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
            <div style={roomPhotoMainTitleDivStyle}>
              <h2>{room.title}</h2>
            </div>
+          </ExternalLink>
           </div>
           <Card.Content>
             <Card.Header>
