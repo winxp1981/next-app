@@ -9,7 +9,10 @@ import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
-import { Divider, Menu, Icon, Transition, List, Image } from 'semantic-ui-react'
+import ExternalLink from '../components/externalLink'
+import { Divider, Menu, Icon, Transition, List, Image,
+       Dimmer, Loader, Segment, Header, Grid, Container, Label, Statistic
+} from 'semantic-ui-react'
 
 const ITEMS_PER_PAGE = 10;
 const PAGES_IN_A_ROW = 10;
@@ -48,6 +51,10 @@ class Search extends React.Component {
   handlePageItemClick = async (e, { name }) => {
     console.log("handlePageItemClick: " + name);
     var _page = parseInt(name);
+    if (this.state.active_page === _page) {
+      // click on the same page, do nothing
+     return;
+    }
     this.setState({ active_page: _page })
 
     await this.queryRooms(ITEMS_PER_PAGE, (_page-1)*ITEMS_PER_PAGE);
@@ -137,12 +144,14 @@ class Search extends React.Component {
       starting_page: 1,
       ending_page: 1,
       total_pages: 0,
+      page_loading: false,
     }
   }
 
   queryRooms = async (limit, offset) => {
+
     this.setState({
-        rooms: [],
+        page_loading: true,
     });
 
     var queryUrl = '/rooms/?limit='+limit+'&offset=' + offset
@@ -162,7 +171,7 @@ class Search extends React.Component {
       this.setState({
           total_rooms: data.count,
       });
-      var rooms = this.state.rooms;
+      var rooms = [];
       data.results.map((room) => {
         rooms.push(room);
       });
@@ -193,6 +202,7 @@ class Search extends React.Component {
       }
       this.setState({
           pages: _pages,
+          page_loading: false,
       });
 /*
       this.setState({
@@ -212,6 +222,10 @@ class Search extends React.Component {
   }
 
   async componentWillMount() {
+
+    this.setState({
+        page_loading: true,
+    });
 
     if (!process.browser) {
       console.log("componentWillMount @server")
@@ -277,9 +291,10 @@ class Search extends React.Component {
     }
     // room list
     var roomListDivStyle = {
-    //  border: '1px solid orange',
-      width: '90%',
+    //  border: '2px solid orange',
+      width: '60%',
     //  margin: '0 auto',
+      minWidth: '600px',
       marginTop: '100px',
       marginLeft: '10%',
     }
@@ -320,11 +335,33 @@ class Search extends React.Component {
 
     // render room infos
     let roomList = this.state.rooms.map(function(room, index) {
+      let _layout = room.layout.split("/");
       return (
-        <List.Item key={index}>
-          <Image src={room.room_thumb.photo} width='200px'/>
-          <List.Content header={room.title} />
-        </List.Item>
+        <Grid.Row key={index}>
+          <Grid.Column width={4}>
+            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
+              <Image src={room.room_thumb.photo} width='300px'/>
+            </ExternalLink>
+          </Grid.Column>
+          <Grid.Column width={9}>
+            <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
+              <Header size='large'>{room.title}</Header>
+            </ExternalLink>
+            <Header size='medium' color='grey'>
+              <Label basic size='large' color='orange'>{room.room_type}</Label>
+              <Label basic size='large' color='orange'>{room.area}坪</Label>
+              <Label basic size='large' color='orange'>{_layout[0]}房{_layout[1]}廳{_layout[2]}衛</Label>
+              <Label basic size='large' color='orange'>樓層: {room.floor}</Label>
+            </Header>
+            <Header size='small' color='grey'>{room.location}</Header>
+          </Grid.Column>
+          <Grid.Column width={3}>
+            <Statistic horizontal size='tiny' color='orange'>
+              <Statistic.Value>{room.price_month}</Statistic.Value>
+              <Statistic.Label>/月</Statistic.Label>
+            </Statistic>
+          </Grid.Column>
+        </Grid.Row>
       );
     });
 
@@ -384,32 +421,25 @@ class Search extends React.Component {
     `}</style>
         </div>
         <div style={roomListDivStyle}>
-        <List celled size='huge'>
-          {
-            roomList
-          }
-        </List>
+        <Dimmer.Dimmable as={Container} blurring dimmed={this.state.page_loading}>
+        <Dimmer active={this.state.page_loading} inverted>
+        <Loader active size='huge'/>
+        </Dimmer>
+          <Grid divided='vertically'>
+            {
+              roomList
+            }
+          </Grid>
+        </Dimmer.Dimmable>
         </div>
         <div style={paginationDivStyle}>
           <Menu style={menuDivStyle} text>
-          <Menu.Item name='prev' style={itemStyle} active={false} onClick={this.handlePageItemNavigation}>
-            <Icon name='chevron left' />
-          </Menu.Item>
-          {
-            pageMenuItemList
-            /*
-            <Menu.Item name='1' style={this.state.active_page === '1' ? itemActiveStyle : itemStyle} active={this.state.active_page === '1'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='2' style={this.state.active_page === '2' ? itemActiveStyle : itemStyle} active={this.state.active_page === '2'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='3' style={this.state.active_page === '3' ? itemActiveStyle : itemStyle} active={this.state.active_page === '3'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='4' style={this.state.active_page === '4' ? itemActiveStyle : itemStyle} active={this.state.active_page === '4'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='5' style={this.state.active_page === '5' ? itemActiveStyle : itemStyle} active={this.state.active_page === '5'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='6' style={this.state.active_page === '6' ? itemActiveStyle : itemStyle} active={this.state.active_page === '6'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='7' style={this.state.active_page === '7' ? itemActiveStyle : itemStyle} active={this.state.active_page === '7'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='8' style={this.state.active_page === '8' ? itemActiveStyle : itemStyle} active={this.state.active_page === '8'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='9' style={this.state.active_page === '9' ? itemActiveStyle : itemStyle} active={this.state.active_page === '9'} onClick={this.handlePageItemClick} />
-            <Menu.Item name='10' style={this.state.active_page === '10' ? itemActiveStyle : itemStyle} active={this.state.active_page === '10'} onClick={this.handlePageItemClick} />
-            */
-          }
+            <Menu.Item name='prev' style={itemStyle} active={false} onClick={this.handlePageItemNavigation}>
+              <Icon name='chevron left' />
+            </Menu.Item>
+              {
+                pageMenuItemList
+              }
             <Menu.Item name='next' style={itemStyle} active={false} onClick={this.handlePageItemNavigation}>
               <Icon name='chevron right' />
             </Menu.Item>
