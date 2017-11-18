@@ -157,6 +157,7 @@ class Search extends React.Component {
       }
       _query_str += ('&area=' + _area)
     }
+
     console.log('QUERY: ' + _query_str);
     return _query_str;
   }
@@ -232,6 +233,7 @@ class Search extends React.Component {
     store.dispatch(setUsername(initProps.username));
     store.dispatch(setAvatar(initProps.avatar));
     console.log(query.keyword);
+    initProps.keyword = query.keyword;
     return initProps;
   }
 
@@ -259,16 +261,25 @@ class Search extends React.Component {
       ending_page: 1,
       total_pages: 0,
       page_loading: false,
+
+      keyword: '',
     }
   }
 
-  queryRooms = async (limit, offset) => {
+  queryRooms = async (limit, offset, _keyword = null) => {
+
+    console.log('+queryRooms: '+ _keyword);
+    console.log('@@ keyword: '+ _keyword);
 
     this.setState({
         page_loading: true,
     });
 
     var queryStr = this.buildQueryString();
+
+    if (_keyword !== null) {
+      queryStr += ('&keyword=' + _keyword);
+    }
 
     var queryUrl = '/rooms/?limit='+limit+'&offset=' + offset + queryStr
     var response = await fetch(BACKEND_URL + queryUrl, {
@@ -350,7 +361,7 @@ class Search extends React.Component {
     else {
       console.log("componentWillMount @client")
       this.setState({ active_page: 1 })
-      await this.queryRooms(ITEMS_PER_PAGE, 0);
+      await this.queryRooms(ITEMS_PER_PAGE, 0, this.props.keyword);
     }
   }
 
