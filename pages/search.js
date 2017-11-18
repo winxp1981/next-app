@@ -23,9 +23,17 @@ class Search extends React.Component {
     console.log("handleSpanClick: " + ev.target.id);
   }
 
-  handleLocation = (ev) => {
+  handleLocation = async (ev) => {
     console.log("handleLocation: " + ev.target.id);
-    this.setState({location: ev.target.id});
+    if (this.state.location === ev.target.id) {
+      // click on the same button, do nothing
+      return;
+    }
+
+    await this.setState({location: ev.target.id});
+
+    this.setState({ active_page: 1 })
+    await this.queryRooms(ITEMS_PER_PAGE, 0);
   }
 
   handleRoomCount = (ev) => {
@@ -38,14 +46,119 @@ class Search extends React.Component {
     this.setState({building_type: ev.target.id});
   }
 
-  handlePrice = (ev) => {
-    console.log("handlePrice: " + ev.target.id);
-    this.setState({price: ev.target.id});
+  handleRoomType = async (ev) => {
+    console.log("handleBuildingType: " + ev.target.id);
+    if (this.state.room_type === ev.target.id) {
+      // click on the same button, do nothing
+      return;
+    }
+
+    await this.setState({room_type: ev.target.id});
+
+    this.setState({ active_page: 1 })
+    await this.queryRooms(ITEMS_PER_PAGE, 0);
   }
 
-  handleArea = (ev) => {
+  handlePrice = async (ev) => {
+    console.log("handlePrice: " + ev.target.id);
+    if (this.state.price === ev.target.id) {
+      // click on the same button, do nothing
+      return;
+    }
+    await this.setState({price: ev.target.id});
+
+    this.setState({ active_page: 1 })
+    await this.queryRooms(ITEMS_PER_PAGE, 0);
+  }
+
+  handleArea = async (ev) => {
     console.log("handleArea: " + ev.target.id);
-    this.setState({area: ev.target.id});
+    if (this.state.area === ev.target.id) {
+      // click on the same button, do nothing
+      return;
+    }
+
+    await this.setState({area: ev.target.id});
+    this.setState({ active_page: 1 })
+    await this.queryRooms(ITEMS_PER_PAGE, 0);
+  }
+
+  buildQueryString = () => {
+    var _query_str = '';
+
+    // location
+    if (this.state.location !== 'any') {
+      let _location = '';
+      if (this.state.location === 'taipei') {
+        _location = '台北市';
+      }
+      else if (this.state.location === 'new_taipei') {
+        _location = '新北市';
+      }
+      _query_str += ('&location=' + _location)
+    }
+
+    // room type
+    if (this.state.room_type !== 'any') {
+      let _roomtype = '';
+      if (this.state.room_type === 'studio') {
+        _roomtype = '獨立套房';
+      }
+      else if (this.state.room_type === 'room') {
+        _roomtype = '雅房';
+      }
+      else if (this.state.room_type === 'whole_floor') {
+        _roomtype = '整層住家';
+      }
+      _query_str += ('&roomtype=' + _roomtype)
+    }
+
+    // price
+    if (this.state.price !== 'any') {
+      let _price = '';
+      if (this.state.price === '_1W') {
+        _price = '_1W';
+      }
+      else if (this.state.price === '1W_2W') {
+        _price = '1W_2W';
+      }
+      else if (this.state.price === '2W_3W') {
+        _price = '2W_3W';
+      }
+      else if (this.state.price === '3W_4W') {
+        _price = '3W_4W';
+      }
+      else if (this.state.price === '4W') {
+        _price = '4W';
+      }
+      _query_str += ('&price=' + _price)
+    }
+
+    // area
+    if (this.state.area !== 'any') {
+      let _area = '';
+      if (this.state.area === '_10P') {
+        _area = '_10P';
+      }
+      else if (this.state.area === '10P_20P') {
+        _area = '10P_20P';
+      }
+      else if (this.state.area === '20P_30P') {
+        _area = '20P_30P';
+      }
+      else if (this.state.area === '30P_40P') {
+        _area = '30P_40P';
+      }
+      else if (this.state.area === '40P_50P') {
+        _area = '40P_50P';
+      }
+      else if (this.state.area === '50P') {
+        _area = '50P';
+      }
+      _query_str += ('&area=' + _area)
+    }
+    console.log('QUERY: ' + _query_str);
+    return _query_str;
   }
 
   handlePageItemClick = async (e, { name }) => {
@@ -132,6 +245,7 @@ class Search extends React.Component {
       location: 'any',
       room_count: 'any',
       building_type: 'any',
+      room_type: 'any',
       price: 'any',
       area: 'any',
 
@@ -154,7 +268,9 @@ class Search extends React.Component {
         page_loading: true,
     });
 
-    var queryUrl = '/rooms/?limit='+limit+'&offset=' + offset
+    var queryStr = this.buildQueryString();
+
+    var queryUrl = '/rooms/?limit='+limit+'&offset=' + offset + queryStr
     var response = await fetch(BACKEND_URL + queryUrl, {
         method: 'GET',
         headers: {
@@ -383,20 +499,19 @@ class Search extends React.Component {
           <span style={(this.state.location === 'taipei') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleLocation} id='taipei'>台北市</span>
           <span style={(this.state.location === 'new_taipei') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleLocation} id='new_taipei'>新北市</span>
             <div style={dividerDivStyle}><Divider fitted /></div>
-          <span style={filterOptionHeaderSpanStyle}>類型</span>
-          <span style={(this.state.building_type === 'any') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='any'>不限</span>
-          <span style={(this.state.building_type === 'evelator') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='evelator'>電梯大樓</span>
-          <span style={(this.state.building_type === 'apartment') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='apartment'>公寓</span>
-          <span style={(this.state.building_type === 'standalone') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='standalone'>透天厝</span>
-          <span style={(this.state.building_type === 'villa') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='villa'>別墅</span>
+          <span style={filterOptionHeaderSpanStyle}>房型</span>
+          <span style={(this.state.room_type === 'any') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomType} id='any'>不限</span>
+          <span style={(this.state.room_type === 'studio') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomType} id='studio'>獨立套房</span>
+          <span style={(this.state.room_type === 'room') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomType} id='room'>雅房</span>
+          <span style={(this.state.room_type === 'whole_floor') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomType} id='whole_floor'>整層住家</span>
             <div style={dividerDivStyle}><Divider fitted /></div>
           <span style={filterOptionHeaderSpanStyle}>房間</span>
           <span style={(this.state.room_count === 'any') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='any'>不限</span>
-          <span style={(this.state.room_count === 'one') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='one'>1 房</span>
-          <span style={(this.state.room_count === 'two') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='two'>2 房</span>
-          <span style={(this.state.room_count === 'three') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='three'>3 房</span>
-          <span style={(this.state.room_count === 'four') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='four'>4 房</span>
-          <span style={(this.state.room_count === 'five') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='five'>5 房以上</span>
+          <span style={(this.state.room_count === '1') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='1'>1 房</span>
+          <span style={(this.state.room_count === '2') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='2'>2 房</span>
+          <span style={(this.state.room_count === '3') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='3'>3 房</span>
+          <span style={(this.state.room_count === '4') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='4'>4 房</span>
+          <span style={(this.state.room_count === '5') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleRoomCount} id='5'>5 房以上</span>
             <div style={dividerDivStyle}><Divider fitted /></div>
           <span style={filterOptionHeaderSpanStyle}>租金</span>
           <span style={(this.state.price === 'any') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handlePrice} id='any'>不限</span>
@@ -461,3 +576,13 @@ const mapStateToProps = (state) => {
 }
 // export default About
 export default withRedux(initStore, mapStateToProps, null)(Search)
+
+
+/*
+<span style={filterOptionHeaderSpanStyle}>建物</span>
+<span style={(this.state.building_type === 'any') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='any'>不限</span>
+<span style={(this.state.building_type === 'evelator') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='evelator'>電梯大樓</span>
+<span style={(this.state.building_type === 'apartment') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='apartment'>公寓</span>
+<span style={(this.state.building_type === 'standalone') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='standalone'>透天厝</span>
+<span style={(this.state.building_type === 'villa') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='villa'>別墅</span>
+*/
