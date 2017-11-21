@@ -11,7 +11,7 @@ import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
 import ExternalLink from '../components/externalLink'
 import { Divider, Menu, Icon, Transition, List, Image,
-       Dimmer, Loader, Segment, Header, Grid, Container, Label, Statistic
+       Dimmer, Loader, Segment, Header, Grid, Container, Label, Statistic,
 } from 'semantic-ui-react'
 
 const ITEMS_PER_PAGE = 10;
@@ -162,9 +162,9 @@ class Search extends React.Component {
     return _query_str;
   }
 
-  handlePageItemClick = async (e, { name }) => {
-    console.log("handlePageItemClick: " + name);
-    var _page = parseInt(name);
+  handlePageItemClick = async (ev) => {
+    console.log("handlePageItemClick: " + ev.target.id);
+    var _page = parseInt(ev.target.id);
     if (this.state.active_page === _page) {
       // click on the same page, do nothing
      return;
@@ -174,12 +174,12 @@ class Search extends React.Component {
     await this.queryRooms(ITEMS_PER_PAGE, (_page-1)*ITEMS_PER_PAGE);
   }
 
-  handlePageItemNavigation = async (e, { name }) => {
-    console.log("handlePageItemClick: " + name);
+  handlePageItemNavigation = async (ev) => {
+    console.log("handlePageItemNavigation: " + ev.target.id);
     console.log("starting page= " + this.state.pages[0])
     console.log("ending page= " + this.state.pages[this.state.pages.length-1])
 
-    if (name === 'prev') {
+    if (ev.target.id === 'prev') {
       if ((this.state.starting_page-1) > 0) {
         // there is previous page
         var _new_starting_page = this.state.starting_page - PAGES_IN_A_ROW;
@@ -192,7 +192,7 @@ class Search extends React.Component {
         await this.queryRooms(ITEMS_PER_PAGE, (_target_page-1)*ITEMS_PER_PAGE);
       }
     }
-    else if (name === 'next') {
+    else if (ev.target.id === 'next') {
       if ((this.state.starting_page+PAGES_IN_A_ROW) <= this.state.total_pages) {
         var _new_starting_page = this.state.starting_page + PAGES_IN_A_ROW;
         console.log(_new_starting_page)
@@ -368,6 +368,7 @@ class Search extends React.Component {
   render () {
     var containerDivStyle = {
     //  border: '1px solid green',
+      fontFamily: 'Microsoft JhengHei',
       width: '90%',
       margin: '0 auto',
     }
@@ -427,39 +428,73 @@ class Search extends React.Component {
     }
     // pagination
     var paginationDivStyle = {
-  //    border: '1px solid blue',
+    //  border: '1px solid blue',
       width: '50%',
+      height: '40px',
       margin: '0 auto',
       marginTop: '50px',
       minWidth: '460xpx',
     }
-    var menuDivStyle = {
-    //  border: '1px solid red',
-      margin: '0 auto',
-    }
-    var itemStyle = {
-  //    backgroundColor: 'white',
-  //    color: '#C0C0C0',
-      width: '40px',
-      height: '36px',
-      border: '1px solid #D3D3D3',
-      marginLeft: '6px',
-      paddingLeft: '11px',
+    var paginationBtnSpanStyle = {
+      display: 'inline-block',
+      border: '1px solid #E0E0E0',
+      cursor: 'pointer',
+      width: '36px',
+      height: '32px',
+      textAlign: 'center',
+      verticalAlign: 'middle',
+      marginLeft: '8px',
+      marginTop: '0px',
+      paddingTop: '6px',
       fontWeight: 'bold',
-      fontSize: '120%',
+      fontSize: '140%',
+      color: '#7B7B7B',
     }
-    var itemActiveStyle = {
-      backgroundColor: '#FF8800',
+    var paginationBtnActiveSpanStyle = {
+      display: 'inline-block',
+      border: '1px solid #FF8800',
+      width: '36px',
+      height: '32px',
+      textAlign: 'center',
+      verticalAlign: 'middle',
+      marginLeft: '8px',
+      marginTop: '0px',
+      paddingTop: '6px',
+      fontWeight: 'bold',
+      fontSize: '140%',
       color: 'white',
-      width: '40px',
-      height: '36px',
-      border: '1px solid #D3D3D3',
-      marginLeft: '6px',
-      paddingLeft: '10px',
-      fontWeight: 'bold',
-      fontSize: '120%',
+      backgroundColor: '#FF8800',
     }
 
+    var likeCountDivStyle = {
+      color: '#FF60AF',
+    //  border: '1px solid blue',
+      marginTop: '30px',
+      fontWeight: 'bold',
+      fontSize: '120%',
+    }
+    var headStyle = {
+      fontFamily: 'Microsoft JhengHei',
+    }
+    var infoContainerDivStyle = {
+    //  border: '1px solid blue',
+      fontFamily: 'Microsoft JhengHei',
+      fontWeight: 'bold',
+      fontSize: '110%',
+      color: '#FF7744',
+      minWidth: '300px',
+      marginTop: '15px',
+    }
+    var infoSpanStyle = {
+      border: '1px solid #FF7744',
+      borderRadius: '5px',
+      marginTop: '10px',
+      marginRight: '10px',
+      paddingLeft: '5px',
+      paddingRight: '5px',
+      paddingTop: '4px',
+      paddingBottom: '4px',
+    }
     // render room infos
     let roomList = this.state.rooms.map(function(room, index) {
       let _layout = room.layout.split("/");
@@ -472,21 +507,22 @@ class Search extends React.Component {
           </Grid.Column>
           <Grid.Column width={9}>
             <ExternalLink route='room_detail' params={{id: room.id}} target='_blank'>
-              <Header size='large'>{room.title}</Header>
+              <Header size='large' style={headStyle}>{room.title}</Header>
             </ExternalLink>
-            <Header size='medium' color='grey'>
-              <Label basic size='large' color='orange'>{room.room_type}</Label>
-              <Label basic size='large' color='orange'>{room.area}坪</Label>
-              <Label basic size='large' color='orange'>{_layout[0]}房{_layout[1]}廳{_layout[2]}衛</Label>
-              <Label basic size='large' color='orange'>樓層: {room.floor}</Label>
-            </Header>
-            <Header size='small' color='grey'>{room.location}</Header>
+              <div style={infoContainerDivStyle}>
+                <span style={infoSpanStyle}>{room.room_type}</span>
+                <span style={infoSpanStyle}>{room.area}坪</span>
+                <span style={infoSpanStyle}>{_layout[0]}房{_layout[1]}廳{_layout[2]}衛</span>
+                <span style={infoSpanStyle}>樓層: {room.floor}</span>
+              </div>
+            <Header as='h3' color='grey' style={headStyle}>{room.location}</Header>
           </Grid.Column>
           <Grid.Column width={3}>
             <Statistic horizontal size='tiny' color='orange'>
               <Statistic.Value>{room.price_month}</Statistic.Value>
               <Statistic.Label>/月</Statistic.Label>
             </Statistic>
+            <div style={likeCountDivStyle}><Icon name='heart' />{room.like_count}</div>
           </Grid.Column>
         </Grid.Row>
       );
@@ -494,7 +530,7 @@ class Search extends React.Component {
 
     let pageMenuItemList = this.state.pages.map(function(page, index) {
       return (
-        <Menu.Item key={index} name={page.toString()} style={this.state.active_page === page ? itemActiveStyle : itemStyle} active={this.state.active_page === page} onClick={this.handlePageItemClick} />
+        <span key={index} style={this.state.active_page === page ? paginationBtnActiveSpanStyle : paginationBtnSpanStyle} onClick={this.handlePageItemClick} id={page.toString()}>{page.toString()}</span>
       );
     }.bind(this));
 
@@ -540,11 +576,6 @@ class Search extends React.Component {
           <span style={(this.state.area === '30P_40P') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleArea} id='30P_40P'>30-40 坪</span>
           <span style={(this.state.area === '40P_50P') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleArea} id='40P_50P'>40-50 坪</span>
           <span style={(this.state.area === '50P') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleArea} id='50P'>50 坪以上</span>
-          <style jsx>{`
-            span:hover {
-                color: #EE7700;
-            }
-    `}</style>
         </div>
         <div style={roomListDivStyle}>
         <Dimmer.Dimmable as={Container} blurring dimmed={this.state.page_loading}>
@@ -553,24 +584,20 @@ class Search extends React.Component {
         </Dimmer>
           <Grid divided='vertically'>
             {
-              roomList
+              (this.state.rooms.length > 0) ? roomList : <Header as='h2' color='grey'>沒有符合條件的房屋</Header>
             }
           </Grid>
         </Dimmer.Dimmable>
         </div>
         <div style={paginationDivStyle}>
-          <Menu style={menuDivStyle} text>
-            <Menu.Item name='prev' style={itemStyle} active={false} onClick={this.handlePageItemNavigation}>
-              <Icon name='chevron left' />
-            </Menu.Item>
-              {
-                pageMenuItemList
-              }
-            <Menu.Item name='next' style={itemStyle} active={false} onClick={this.handlePageItemNavigation}>
-              <Icon name='chevron right' />
-            </Menu.Item>
-          </Menu>
+          <span className="glyphicon glyphicon-chevron-left paginationBtn" style={paginationBtnSpanStyle} onClick={this.handlePageItemNavigation} id='prev' />
+          {
+            pageMenuItemList
+          }
+          <span className="glyphicon glyphicon-chevron-right" style={paginationBtnSpanStyle} onClick={this.handlePageItemNavigation} id='next' />
         </div>
+        <style jsx>{`
+  `}</style>
         </div>
       </Layout>
       </I18nextProvider>
@@ -590,10 +617,5 @@ export default withRedux(initStore, mapStateToProps, null)(Search)
 
 
 /*
-<span style={filterOptionHeaderSpanStyle}>建物</span>
-<span style={(this.state.building_type === 'any') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='any'>不限</span>
-<span style={(this.state.building_type === 'evelator') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='evelator'>電梯大樓</span>
-<span style={(this.state.building_type === 'apartment') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='apartment'>公寓</span>
-<span style={(this.state.building_type === 'standalone') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='standalone'>透天厝</span>
-<span style={(this.state.building_type === 'villa') ? filterOptionSpanSelectedStyle: filterOptionSpanStyle} onClick={this.handleBuildingType} id='villa'>別墅</span>
+<Menu.Item key={index} name={page.toString()} style={this.state.active_page === page ? itemActiveStyle : itemStyle} active={this.state.active_page === page} onClick={this.handlePageItemClick} />
 */

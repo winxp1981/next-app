@@ -9,7 +9,10 @@ import { I18nextProvider } from 'react-i18next'
 import startI18n from '../tools/startI18n'
 import { getTranslations } from '../tools/translationHelpers'
 import Head from 'next/head'
-import { Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List, Divider, Segment, Button, Table, Popup } from 'semantic-ui-react'
+import {
+  Grid, Card, Icon, Image, Label, Dropdown, Menu, Statistic, Header, List,
+  Divider, Segment, Button, Table, Popup, Rating
+} from 'semantic-ui-react'
 import { Carousel } from 'react-responsive-carousel'
 import RoomMap from '../components/roomMap'
 

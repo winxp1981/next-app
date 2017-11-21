@@ -73,11 +73,12 @@ class About extends React.Component {
       <Layout title = "Welcome to Roomoca" lang={this.props.lang}>
         <Head>
         </Head>
-        {
-        // <div className='jumbotron'><h1>About param: {this.props.url.query.id}</h1></div>
-        }
         <div style={aboutDivStyle}>
+        {
+          /*
           <Tab panes={panes} defaultActiveIndex={0} />
+          */
+        }
         </div>
       </Layout>
       </I18nextProvider>

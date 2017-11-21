@@ -24,6 +24,7 @@ class Footer extends React.Component {
 
   render () {
     var footerDivStyle = {
+        fontFamily: 'Microsoft JhengHei',
     //    border: '1px solid red',
         width: '70%',
         height: '200px',

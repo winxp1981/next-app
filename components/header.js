@@ -186,6 +186,7 @@ class Header extends React.Component {
           div.header {
           //    border: 1px solid red;
               margin-right: 30px;
+              fontFamily: 'Microsoft JhengHei',
           }
           ul.header {
             list-style: none;
@@ -210,7 +211,7 @@ class Header extends React.Component {
               text-decoration: none;
           }
           ul.header li.top_menu a.top_item {
-              font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+              font-family: 'Microsoft JhengHei', Arial, 'Helvetica Neue', Helvetica, sans-serif;
               text-decoration: none;
               position: relative;
               display: block;

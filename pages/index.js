@@ -101,7 +101,7 @@ class Index extends React.Component {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-    });
+    });f
 
     var result = false;
     var data = await response.json();
@@ -247,6 +247,7 @@ class Index extends React.Component {
         marginTop: '50px',
     }
     var searchDivStyle = {
+        fontFamily: 'Microsoft JhengHei',        
     //    border: '1px solid green',
         position: 'absolute',
       //  width: '36%',
@@ -310,6 +311,7 @@ class Index extends React.Component {
     var heroTextStyle = {
       color: '#FFFFFF',
       fontSize: '300%',
+      fontFamily: 'Microsoft JhengHei',
     }
     var collectionDivStyle = {
     //    border: '1px solid red',
@@ -432,6 +434,8 @@ class Index extends React.Component {
               </div>
             </div>
         </div>
+        {
+          /*
         <div style={collectionDivStyle}>
           <Image centered src="../static/img/roomoca_collect_64.png" />
             <Header size='large' textAlign='center'>摩卡嚴選</Header>
@@ -448,6 +452,8 @@ class Index extends React.Component {
              </Grid>
           </InfiniteScroll>
         </div>
+        */
+        }
       </div>
     </Layout>
     </I18nextProvider>
